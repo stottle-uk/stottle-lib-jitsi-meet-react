@@ -77,6 +77,12 @@ export class ConnectionEstablished implements Action {
   constructor(public payload: number) {}
 }
 
+export class AudioLevelsChanged implements Action {
+  readonly type = JitsiConferenceEventTypes.AudioLevelsChanged;
+
+  constructor(public payload: [string, number]) {}
+}
+
 export type JitsiConferenceEvents =
   | ConferenceJoined
   | ConferenceLeft
@@ -87,4 +93,5 @@ export type JitsiConferenceEvents =
   | UserKicked
   | SetCreatedTimestamp
   | UserJoined
-  | ConnectionEstablished;
+  | ConnectionEstablished
+  | AudioLevelsChanged;
