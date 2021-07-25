@@ -16,11 +16,8 @@ interface OwnProps {
 }
 
 const Conference: React.FC<OwnProps> = () => {
-  const { isJoined, joinConference, leaveConference } = useJitsiConference({
-    sessionId: `myTestRoomNameStuart1234`.toLowerCase(),
-    username: `stuart`,
-    conferenceOptions
-  });
+  const { isJoined, joinConference, leaveConference } =
+    useJitsiConference(conferenceOptions);
 
   useEffect(() => {
     // joinConference();
@@ -31,13 +28,16 @@ const Conference: React.FC<OwnProps> = () => {
     };
   }, []);
 
+  const join = (username: string) =>
+    joinConference(`myTestRoomNameStuart1234`.toLowerCase(), username);
+
   const renderBody = () => (
     <div className={styles.container}>
       <Grid />
     </div>
   );
 
-  return isJoined ? renderBody() : <Lobby joinConference={joinConference} />;
+  return isJoined ? renderBody() : <Lobby joinConference={join} />;
 };
 
 export default Conference;
