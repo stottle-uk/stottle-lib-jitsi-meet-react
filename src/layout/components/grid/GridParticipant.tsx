@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
 import styles from './Grid.module.scss';
 import ParticipantTrack from './ParticipantTrack';
+import Speaking from './Speaking';
 
 interface ExtractedTracks {
   audio: JitsiTrack | undefined;
@@ -25,7 +26,6 @@ const GridParticipant: React.FC<OwnProps> = ({
   userAction
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
   const { audio, video } = tracks.reduce<ExtractedTracks>(
     (prev, curr) => ({ ...prev, [curr.getType()]: curr }),
     {
@@ -55,7 +55,9 @@ const GridParticipant: React.FC<OwnProps> = ({
           </div>
         )}
 
-        <p className={styles.username}>{username}</p>
+        <p className={styles.username}>
+          {username} <Speaking userId={id} />
+        </p>
 
         {id !== 'local' && displayUserActions && (
           <>

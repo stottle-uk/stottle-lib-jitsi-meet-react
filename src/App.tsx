@@ -9,7 +9,7 @@ const connectionOptions = {
     domain: JITSI_SERVICE_URL,
     muc: 'conference.meet.jit.si'
   },
-  serviceUrl: `https://meet.afya.fit/http-bind`,
+  serviceUrl: `https://meet.jit.si/http-bind`,
   clientNode: 'http://jitsi.org/jitsimeet'
 };
 
