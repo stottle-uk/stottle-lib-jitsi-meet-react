@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useJitsiActions } from '../../../conference/hooks/useJitsiActions';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
+import Settings from '../Settings';
 import Toolbar from '../Toolbar';
 import styles from './Grid.module.scss';
 import GridParticipant from './GridParticipant';
@@ -37,6 +38,7 @@ const getRows = (len: number): string => {
 const Grid: React.FC = () => {
   const { kickParticipant, muteParticipant } = useJitsiActions();
   const { allTracks, localTracks } = useJitsiTracks('ME!');
+  const [settingsVisible, setSettingsVisible] = useState(false);
 
   const muteAll = () =>
     Object.keys(allTracks).forEach(userId => muteParticipant(userId, 'audio'));
@@ -76,12 +78,21 @@ const Grid: React.FC = () => {
         ))}
       </div>
       {localTracks.audio && localTracks.video && (
-        <Toolbar
-          video={localTracks.video}
-          audio={localTracks.audio}
-          muteAll={muteAll}
-          leaveConference={() => console.log('HANDLE LEAVE CONFERENCE')}
-        />
+        <>
+          <Toolbar
+            video={localTracks.video}
+            audio={localTracks.audio}
+            muteAll={muteAll}
+            showSettings={() => setSettingsVisible(!settingsVisible)}
+            leaveConference={() => console.log('HANDLE LEAVE CONFERENCE')}
+          />
+          <Settings
+            isVisible={settingsVisible}
+            video={localTracks.video}
+            audio={localTracks.audio}
+            subitPassword={p => console.log(p)}
+          />
+        </>
       )}
     </>
   );

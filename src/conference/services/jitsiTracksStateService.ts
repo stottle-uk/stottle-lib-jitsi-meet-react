@@ -35,7 +35,6 @@ export class JitsiTracksStateService {
   );
   private createRemoteTracks$ = this.jitsiService.conferenceEvents$.pipe(
     typeOf(JitsiConferenceEventTypes.ConnectionEstablished),
-    tap(track => console.log(track)),
     switchMap(() => this.jitsiService.getRemoteTracks()),
     tap(track => this.stateInner$.next(new AddTrack(track)))
   );
@@ -62,8 +61,6 @@ export class JitsiTracksStateService {
   }
 
   private handleEvents(event: JitsiConferenceEvents) {
-    console.log(event);
-
     switch (event.type) {
       case JitsiConferenceEventTypes.TrackAdded:
         if (!event.payload.isLocal()) {

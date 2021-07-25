@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { JitsiConferenceOptions } from '../models/JitsiConference';
 import { JitsiConnectionOptions } from '../models/JitsiConnection';
 import {
   connectionInitialState,
@@ -9,12 +10,14 @@ import { useJitsiConnectionState } from './useJitsiMeet';
 export interface JitsiProps {
   sessionId: string;
   connectionOptions: JitsiConnectionOptions;
+  conferenceOptions: JitsiConferenceOptions;
   jwtToken?: string | null;
 }
 
 export const useJitsiConnection = ({
   sessionId,
   connectionOptions,
+  conferenceOptions,
   jwtToken = null
 }: JitsiProps) => {
   const connection = useJitsiConnectionState();
@@ -31,7 +34,12 @@ export const useJitsiConnection = ({
   }, [connection]);
 
   const connect = () =>
-    connection.connect(sessionId, jwtToken, connectionOptions);
+    connection.connect(
+      sessionId,
+      jwtToken,
+      connectionOptions,
+      conferenceOptions
+    );
 
   return {
     ...connectionState,

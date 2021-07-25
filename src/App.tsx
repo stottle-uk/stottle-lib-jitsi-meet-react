@@ -13,11 +13,19 @@ const connectionOptions = {
   clientNode: 'http://jitsi.org/jitsimeet'
 };
 
+const conferenceOptions = {
+  enableLayerSuspension: true,
+  p2p: {
+    enabled: false
+  }
+};
+
 const App: React.FC = () => {
   const { isConnected, isConnecting, connect, disconnect } = useJitsiConnection(
     {
       sessionId: `myTestRoomNameStuart1234`.toLowerCase(),
-      connectionOptions
+      connectionOptions,
+      conferenceOptions
       // jwtToken: session.jitsi_jwt,
     }
   );

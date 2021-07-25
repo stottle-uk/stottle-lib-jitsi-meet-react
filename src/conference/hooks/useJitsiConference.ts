@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
-import { JitsiConferenceOptions } from '../models/JitsiConference';
 import {
   conferenceInitialState,
   ConferenceState
 } from '../services/reducers/conferenceReducer';
 import { useJitsiConferenceState } from './useJitsiMeet';
 
-export const useJitsiConference = (
-  conferenceOptions: JitsiConferenceOptions
-) => {
+export const useJitsiConference = () => {
   const conference = useJitsiConferenceState();
   const [conferenceState, setConferenceState] = useState<ConferenceState>(
     conferenceInitialState
@@ -22,8 +19,8 @@ export const useJitsiConference = (
     };
   }, [conference]);
 
-  const joinConference = (sessionId: string, username: string) =>
-    conference.joinConference(username, sessionId, conferenceOptions);
+  const joinConference = (username: string) =>
+    conference.joinConference(username);
 
   const leaveConference = () => conference.leaveConference();
 

@@ -17,7 +17,13 @@ export enum JitsiConferenceEventTypes {
   TrackRemoved = 'conference.trackRemoved',
   UserLeft = 'conference.userLeft',
   UserJoined = 'conference.userJoined',
-  ConnectionEstablished = 'conference.connectionEstablished'
+  ConnectionEstablished = 'conference.connectionEstablished',
+  ConferenceFailed = 'conference.failed'
+}
+
+export class AuthStatusChanged implements Action {
+  readonly type = JitsiConferenceEventTypes.AuthStatusChanged;
+  constructor(public payload: [boolean, string]) {}
 }
 
 export class ConferenceJoined implements Action {
@@ -83,6 +89,12 @@ export class AudioLevelsChanged implements Action {
   constructor(public payload: [string, number]) {}
 }
 
+export class ConferenceFailed implements Action {
+  readonly type = JitsiConferenceEventTypes.ConferenceFailed;
+
+  constructor(public payload: 'conference.passwordRequired') {}
+}
+
 export type JitsiConferenceEvents =
   | ConferenceJoined
   | ConferenceLeft
@@ -94,4 +106,5 @@ export type JitsiConferenceEvents =
   | SetCreatedTimestamp
   | UserJoined
   | ConnectionEstablished
-  | AudioLevelsChanged;
+  | AudioLevelsChanged
+  | ConferenceFailed;

@@ -1,10 +1,11 @@
-import { merge, ReplaySubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { merge, ReplaySubject, Subject } from 'rxjs';
+import { switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { scanState, typeOf } from '../models/events/action';
 import {
   JitsiConnectionEvents,
   JitsiConnectionEventTypes
 } from '../models/events/connection';
+import { JitsiConferenceOptions } from '../models/JitsiConference';
 import { JitsiConnectionOptions } from '../models/JitsiConnection';
 import { JitsiMeetService } from './jitsiMeetService';
 import {
@@ -18,6 +19,18 @@ import {
 } from './reducers/connectionReducer';
 
 export class JitsiConnectionStateService {
+  private confOptionsInner$ = new Subject<{
+    roomname: string;
+    confOptions: JitsiConferenceOptions;
+  }>();
+  private initConference$ = this.jitsiService.connectionEvents$.pipe(
+    typeOf(JitsiConnectionEventTypes.ConnectionEstablished),
+    withLatestFrom(this.confOptionsInner$),
+    switchMap(([, { roomname, confOptions }]) =>
+      this.jitsiService.initConference(roomname, confOptions)
+    )
+  );
+
   private events$ = this.jitsiService.connectionEvents$.pipe(
     typeOf(JitsiConnectionEventTypes.ConnectionEstablished),
     tap(event => this.handleEvents(event))
@@ -31,19 +44,24 @@ export class JitsiConnectionStateService {
   constructor(private jitsiService: JitsiMeetService) {}
 
   init() {
-    merge(this.events$).subscribe();
+    merge(this.events$, this.initConference$).subscribe();
   }
 
   connect(
     roomname: string,
     token: string | null,
-    connectionOptions: JitsiConnectionOptions
+    connOptions: JitsiConnectionOptions,
+    confOptions: JitsiConferenceOptions
   ) {
+    this.confOptionsInner$.next({
+      roomname,
+      confOptions
+    });
     this.stateInner$.next(new SetIsConnecting(true));
     this.jitsiService.connect(null, token, {
-      ...connectionOptions,
-      serviceUrl: connectionOptions.serviceUrl
-        ? `${connectionOptions.serviceUrl}?room=${roomname}`
+      ...connOptions,
+      serviceUrl: connOptions.serviceUrl
+        ? `${connOptions.serviceUrl}?room=${roomname}`
         : undefined
     });
   }

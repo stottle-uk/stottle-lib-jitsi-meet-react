@@ -102,9 +102,9 @@ export class JitsiMeetService {
   connect(
     appId: string | null,
     token: string | null,
-    options: JitsiConnectionOptions
+    connOptions: JitsiConnectionOptions
   ) {
-    const conn = new this.jitsiMeet.JitsiConnection(appId, token, options);
+    const conn = new this.jitsiMeet.JitsiConnection(appId, token, connOptions);
     conn.connect();
     this.connInner$.next(conn);
   }
@@ -116,22 +116,34 @@ export class JitsiMeetService {
     );
   }
 
+  initConference(roomname: string, confOptions: JitsiConferenceOptions) {
+    return this.connInner$.pipe(
+      take(1),
+      map(conn => conn.initJitsiConference(roomname, confOptions)),
+      tap(conf => this.confInner$.next(conf))
+    );
+  }
+
   dispose() {
     this.destroy$.next(undefined);
   }
 
-  joinConference(
-    roomname: string,
-    username: string,
-    options: JitsiConferenceOptions
-  ) {
-    return this.connInner$.pipe(
+  joinConference(username: string) {
+    return this.confInner$.pipe(
       take(1),
-      map(conn => conn.initJitsiConference(roomname, options)),
       tap(conf => conf.setDisplayName(username)),
-      tap(conf => conf.join()),
-      tap(conf => this.confInner$.next(conf))
+      tap(conf => conf.join('password'))
     );
+  }
+
+  leaveConference() {
+    this.confInner$
+      .pipe(
+        take(1),
+        switchMap(conf => conf.leave())
+        // switchMap(() => this.disconnect())
+      )
+      .subscribe();
   }
 
   addTrack(track: JitsiTrack) {
@@ -174,16 +186,6 @@ export class JitsiMeetService {
     return this.jitsiMeet.mediaDevices.setAudioOutputDevice(deviceId);
   }
 
-  leaveConference() {
-    this.confInner$
-      .pipe(
-        take(1),
-        switchMap(conf => conf.leave())
-        // switchMap(() => this.disconnect())
-      )
-      .subscribe();
-  }
-
   getParticipants() {
     return this.confInner$.pipe(
       take(1),
@@ -193,6 +195,13 @@ export class JitsiMeetService {
 
   getRemoteTracks() {
     return this.getParticipants().pipe(switchMap(p => p.getTracks()));
+  }
+
+  lockRoom(password: string) {
+    return this.confInner$.pipe(
+      take(1),
+      switchMap(conf => conf.lock(password))
+    );
   }
 
   kickParticipant(userId: string) {

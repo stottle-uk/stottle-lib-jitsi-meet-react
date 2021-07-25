@@ -12,13 +12,15 @@ interface OwnProps {
   video: JitsiTrack;
   leaveConference: () => void;
   muteAll: () => void;
+  showSettings: () => void;
 }
 
 const Toolbar: React.FC<OwnProps> = ({
   audio,
   video,
   muteAll,
-  leaveConference
+  leaveConference,
+  showSettings
 }) => {
   const { replaceDevice } = useJitsiDevices();
 
@@ -91,6 +93,14 @@ const Toolbar: React.FC<OwnProps> = ({
             logo={'volume-mute'}
             onClick={() => muteAll()}
             className={callBtnStyles['call-btn-hangup']}
+          />
+        </div>
+        <div className={styles.btn}>
+          <CallButton
+            caption="Settings"
+            logo={'cog'}
+            onClick={() => showSettings()}
+            className={callBtnStyles['call-btn-last']}
           />
         </div>
       </div>

@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { fromEvent, merge } from 'rxjs';
+import React, { useRef, useState } from 'react';
 import { useJitsiDevices } from '../../conference/hooks/useJitsiDevices';
-import { TRACK_MUTE_CHANGED } from '../../conference/models/events/track';
 import { JitsiTrack } from '../../conference/models/JitsiTrack';
-import AudioTrack from './grid/AudioTrack';
-import VideoTrack from './grid/VideoTrack';
 
 interface OwnProps {
   audio: JitsiTrack;
@@ -20,27 +16,70 @@ const Devices: React.FC<OwnProps> = ({ audio, video }) => {
     audioOutDevices,
     audioOutId
   } = useJitsiDevices();
+  const videoEl = useRef<HTMLVideoElement>(null);
+  const audioEl = useRef<HTMLAudioElement>(null);
 
   const [isMuted, setMuted] = useState({
     audio: audio.isMuted(),
     video: video.isMuted()
   });
 
-  useEffect(() => {
-    const sub = merge(
-      fromEvent<JitsiTrack>(audio, TRACK_MUTE_CHANGED),
-      fromEvent<JitsiTrack>(video, TRACK_MUTE_CHANGED)
-    ).subscribe(track => {
-      setMuted(state => ({ ...state, [track.getType()]: track.isMuted() }));
-    });
-    audio.mute();
+  // useEffect(() => {
+  //   if (videoEl.current && videoInDevices.length && audioOutDevices.length) {
+  //     console.log(audioOutDevices);
+  //     console.log(videoInDevices);
 
-    return () => sub.unsubscribe();
-  }, [audio, video]);
+  //     navigator.mediaDevices
+  //       .getUserMedia({
+  //         video: {
+  //           deviceId: {
+  //             exact: videoInDevices[0].deviceId
+  //           }
+  //         }
+  //       })
+  //       .then(function (stream) {
+  //         if (videoEl.current) {
+  //           videoEl.current.srcObject = stream;
+  //         }
+  //       })
+  //       .catch(function (err0r) {
+  //         console.log('Something went wrong!');
+  //       });
+
+  //     navigator.mediaDevices
+  //       .getUserMedia({
+  //         audio: {
+  //           deviceId: {
+  //             exact:
+  //               'e4008bc536b86cd5b98a777c2a3040a29662c4212ba09789b47ab2f92a225c6f'
+  //           }
+  //         }
+  //       })
+  //       .then(function (stream) {
+  //         if (audioEl.current) {
+  //           audioEl.current.srcObject = stream;
+  //         }
+  //       })
+  //       .catch(function (err0r) {
+  //         console.log('AUDIO went wrong!');
+  //       });
+  //   }
+  // }, [audioOutDevices, videoInDevices]);
 
   const toggleMute = async (t: JitsiTrack) =>
     t.isMuted() ? await t.unmute() : await t.mute();
 
+  const playTestSound = () => {
+    if (audioEl.current) {
+      console.log(audioEl.current);
+      const beepLong = new Audio('./assets/sound-go.wav');
+      beepLong.play();
+      // audioEl.current.src = './assets/sound-go.wav';
+      audioEl.current.play();
+    }
+  };
+
+  // https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
   return (
     <div>
       <button onClick={() => toggleMute(audio)}>
@@ -100,8 +139,11 @@ const Devices: React.FC<OwnProps> = ({ audio, video }) => {
           </li>
         </ul>
       </div>
-      <AudioTrack track={audio} dispose={false}></AudioTrack>
-      <VideoTrack track={video} dispose={false}></VideoTrack>
+      {/* <AudioTrack track={audio} dispose={false}></AudioTrack>
+      <VideoTrack track={video} dispose={false}></VideoTrack> */}
+      <video autoPlay={true} ref={videoEl}></video>
+      <audio muted={true} src="./assets/sound-go.wav" ref={audioEl}></audio>
+      <button onClick={playTestSound}>TEST AUDIO</button>
     </div>
   );
 };

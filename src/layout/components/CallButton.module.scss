@@ -10,22 +10,7 @@
     width: 100%;
     border-right: 2px solid #000;
 
-    &.callBtnAudio {
-      > img {
-        width: 23px;
-        height: 32px;
-      }
-
-      &.audioMuted > img {
-        width: 41px;
-      }
-    }
-
-    &.call-btn-camera {
-      width: 100px;
-    }
-
-    &.call-btn-hangup {
+    &.call-btn-last {
       border-right: none;
     }
   }

@@ -5,7 +5,6 @@ import {
   JitsiConferenceEvents,
   JitsiConferenceEventTypes
 } from '../models/events/conference';
-import { JitsiConferenceOptions } from '../models/JitsiConference';
 import { JitsiMeetService } from './jitsiMeetService';
 import {
   ConferenceStateActions,
@@ -31,7 +30,9 @@ export class JitsiConferenceStateService {
       JitsiConferenceEventTypes.Left,
       JitsiConferenceEventTypes.kicked
     ),
-    tap(event => this.handleEvents(event))
+    tap(event => this.handleEvents(event)),
+    typeOf(JitsiConferenceEventTypes.Joined),
+    switchMap(() => this.jitsiService.lockRoom('password'))
   );
 
   private stateInner$ = new ReplaySubject<ConferenceStateActions>(1);
@@ -45,12 +46,8 @@ export class JitsiConferenceStateService {
     merge(this.userLeft$, this.events$).subscribe();
   }
 
-  joinConference(
-    username: string,
-    roomname: string,
-    options: JitsiConferenceOptions
-  ) {
-    this.jitsiService.joinConference(roomname, username, options).subscribe();
+  joinConference(username: string) {
+    this.jitsiService.joinConference(username).subscribe();
   }
 
   leaveConference() {

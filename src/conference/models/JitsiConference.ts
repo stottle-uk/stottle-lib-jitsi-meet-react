@@ -7,6 +7,7 @@ export interface JitsiConferenceOptions {
   openBridgeChannel?: boolean;
   startAudioMuted?: boolean;
   startVideoMuted?: boolean;
+  enableLayerSuspension: boolean;
   p2p?: {
     enabled: boolean;
     stunServers?: string;
