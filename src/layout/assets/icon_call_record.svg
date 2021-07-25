@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="25px" viewBox="0 0 26 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>3DA3FA18-2886-4CA4-BE95-A4B004982C36</title>
+    <g id="POC" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Coach-Fullscreen" transform="translate(-948.000000, -973.000000)" fill="#9D9D9D">
+            <g id="Navigation" transform="translate(0.000000, 833.000000)">
+                <g id="Button-Group" transform="translate(676.000000, 131.000000)">
+                    <g id="Button-4" transform="translate(240.000000, 0.000000)">
+                        <g id="Iconography/Play" transform="translate(32.187500, 9.000000)">
+                            <path d="M22.9834416,0.78125 L2.01655844,0.78125 C0.904545455,0.78125 1.43884904e-13,1.69814777 1.43884904e-13,2.82534622 L1.43884904e-13,22.1746538 C1.43884904e-13,23.3021813 0.904545455,24.21875 2.01655844,24.21875 L22.9834416,24.21875 C24.0954545,24.21875 25,23.3021813 25,22.1746538 L25,2.82534622 C25,1.69814777 24.0954545,0.78125 22.9834416,0.78125 Z M12.5,17.1875 C9.91517857,17.1875 7.8125,15.0851563 7.8125,12.5 C7.8125,9.91517857 9.91517857,7.8125 12.5,7.8125 C15.0851563,7.8125 17.1875,9.91517857 17.1875,12.5 C17.1875,15.0851562 15.0851563,17.1875 12.5,17.1875 Z" id="icon_record"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

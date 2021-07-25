@@ -1,0 +1,37 @@
+.container {
+  position: fixed;
+  width: 100%;
+
+  bottom: 0;
+  height: 124px;
+  z-index: 5;
+  opacity: 1;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: space-between;
+
+  &.hidden {
+    bottom: -100px;
+    transition: 0.5s;
+  }
+
+  .toolbar {
+    display: flex;
+    background-color: #333;
+    height: 80px;
+    padding: 0 24px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .btn {
+      position: relative;
+      width: 88px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+}

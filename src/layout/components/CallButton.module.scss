@@ -1,0 +1,56 @@
+.button {
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    border-right: 2px solid #000;
+
+    &.callBtnAudio {
+      > img {
+        width: 23px;
+        height: 32px;
+      }
+
+      &.audioMuted > img {
+        width: 41px;
+      }
+    }
+
+    &.call-btn-camera {
+      width: 100px;
+    }
+
+    &.call-btn-hangup {
+      border-right: none;
+    }
+  }
+
+  &:first-child {
+    button {
+      border-radius: 4px 0 0 4px;
+    }
+  }
+
+  &:last-child {
+    button {
+      border-radius: 0 4px 4px 0;
+    }
+  }
+
+  span {
+    color: #4b4b4b;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 1.38px;
+    line-height: 10px;
+    text-transform: uppercase;
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+  }
+}
