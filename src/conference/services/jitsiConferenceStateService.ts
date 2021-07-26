@@ -30,9 +30,7 @@ export class JitsiConferenceStateService {
       JitsiConferenceEventTypes.Left,
       JitsiConferenceEventTypes.kicked
     ),
-    tap(event => this.handleEvents(event)),
-    typeOf(JitsiConferenceEventTypes.Joined),
-    switchMap(() => this.jitsiService.lockRoom('password'))
+    tap(event => this.handleEvents(event))
   );
 
   private stateInner$ = new ReplaySubject<ConferenceStateActions>(1);
