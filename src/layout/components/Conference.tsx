@@ -20,7 +20,8 @@ const Conference: React.FC<OwnProps> = () => {
     };
   }, []);
 
-  const join = (username: string) => joinConference(username);
+  const join = (username: string, password?: string) =>
+    joinConference(username, password);
 
   const renderBody = () => (
     <div className={styles.container}>

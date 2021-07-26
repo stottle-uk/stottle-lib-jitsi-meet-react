@@ -5,6 +5,7 @@ import { JitsiConferenceStateService } from '../services/jitsiConferenceStateSer
 import { JitsiConnectionStateService } from '../services/jitsiConnectionStateService';
 import { JitsiDevicesStateService } from '../services/jitsiDevicesStateService';
 import { JitsiMeetService } from '../services/jitsiMeetService';
+import { JitsiPasswordStateService } from '../services/jitsiPasswordStateService';
 import { JitsiStatsStateService } from '../services/jitsiStatsStateService';
 import { JitsiTracksStateService } from '../services/jitsiTracksStateService';
 import { JitsiUsersStateService } from '../services/jitsiUsersStateService';
@@ -26,6 +27,9 @@ const devicesStateService = new JitsiDevicesStateService(jitsiMeetService);
 const tracksStateService = new JitsiTracksStateService(jitsiMeetService);
 const chatStateService = new JitsiChatStateService(jitsiMeetService);
 const jitsiStatsStateService = new JitsiStatsStateService(jitsiMeetService);
+const iitsiPasswordStateService = new JitsiPasswordStateService(
+  jitsiMeetService
+);
 
 connectionStateService.init();
 conferenceStateService.init();
@@ -33,6 +37,7 @@ usersStateService.init();
 devicesStateService.init();
 tracksStateService.init();
 jitsiStatsStateService.init();
+iitsiPasswordStateService.init();
 
 const JitsiContext = createContext(jitsiMeetService);
 const ConnectionStateContext = createContext(connectionStateService);
@@ -42,6 +47,7 @@ const DevicesStateContext = createContext(devicesStateService);
 const TracksStateContext = createContext(tracksStateService);
 const ChatStateService = createContext(chatStateService);
 const StatsStateContext = createContext(jitsiStatsStateService);
+const PasswordStateContext = createContext(iitsiPasswordStateService);
 
 export const useJitsiMeet = () => useContext(JitsiContext);
 export const useJitsiConnectionState = () => useContext(ConnectionStateContext);
@@ -51,3 +57,4 @@ export const useJitsiDevicesState = () => useContext(DevicesStateContext);
 export const useJitsiTracksState = () => useContext(TracksStateContext);
 export const useJitsiChatState = () => useContext(ChatStateService);
 export const useJitsiStatsState = () => useContext(StatsStateContext);
+export const useJitsiPasswordState = () => useContext(PasswordStateContext);

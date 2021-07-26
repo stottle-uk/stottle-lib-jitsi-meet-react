@@ -128,11 +128,11 @@ export class JitsiMeetService {
     this.destroy$.next(undefined);
   }
 
-  joinConference(username: string) {
+  joinConference(username: string, password?: string) {
     return this.confInner$.pipe(
       take(1),
       tap(conf => conf.setDisplayName(username)),
-      tap(conf => conf.join('password'))
+      tap(conf => conf.join(password))
     );
   }
 

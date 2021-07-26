@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useJitsiActions } from '../../../conference/hooks/useJitsiActions';
+import { useJitsiPassword } from '../../../conference/hooks/useJitsiPassword';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
 import Settings from '../Settings';
 import Toolbar from '../Toolbar';
@@ -39,6 +40,7 @@ const Grid: React.FC = () => {
   const { kickParticipant, muteParticipant } = useJitsiActions();
   const { allTracks, localTracks } = useJitsiTracks('ME!');
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const { lockRoom } = useJitsiPassword();
 
   const muteAll = () =>
     Object.keys(allTracks).forEach(userId => muteParticipant(userId, 'audio'));
@@ -90,7 +92,7 @@ const Grid: React.FC = () => {
             isVisible={settingsVisible}
             video={localTracks.video}
             audio={localTracks.audio}
-            subitPassword={p => console.log(p)}
+            subitPassword={p => lockRoom(p)}
           />
         </>
       )}

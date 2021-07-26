@@ -6,17 +6,28 @@ import {
   JitsiConferenceEventTypes
 } from '../models/events/conference';
 import { JitsiMeetService } from './jitsiMeetService';
-import { StatsStateActions } from './reducers/statsActions';
-import { statsInitialState, statsReducer } from './reducers/statsReducer';
+import {
+  PasswordStateActions,
+  SetPasswordRequired
+} from './reducers/passwordActions';
+import {
+  passwordInitialState,
+  passwordReducer
+} from './reducers/passwordReducer';
 
 export class JitsiPasswordStateService {
   private events$ = this.jitsiService.conferenceEvents$.pipe(
-    typeOf(JitsiConferenceEventTypes.ConferenceFailed),
+    typeOf(
+      JitsiConferenceEventTypes.ConferenceFailed,
+      JitsiConferenceEventTypes.Joined
+    ),
     tap(event => this.handleEvents(event))
   );
 
-  private stateInner$ = new ReplaySubject<StatsStateActions>(1);
-  state$ = this.stateInner$.pipe(scanState(statsReducer, statsInitialState));
+  private stateInner$ = new ReplaySubject<PasswordStateActions>(1);
+  state$ = this.stateInner$.pipe(
+    scanState(passwordReducer, passwordInitialState)
+  );
 
   constructor(private jitsiService: JitsiMeetService) {}
 
@@ -29,6 +40,16 @@ export class JitsiPasswordStateService {
   }
 
   private handleEvents(event: JitsiConferenceEvents) {
-    console.log(event);
+    switch (event.type) {
+      case JitsiConferenceEventTypes.ConferenceFailed:
+        if (event.payload === 'conference.passwordRequired') {
+          console.log(event.payload);
+          this.stateInner$.next(new SetPasswordRequired(true));
+        }
+        break;
+      case JitsiConferenceEventTypes.Joined:
+        this.stateInner$.next(new SetPasswordRequired(false));
+        break;
+    }
   }
 }

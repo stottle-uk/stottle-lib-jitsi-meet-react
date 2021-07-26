@@ -46,8 +46,8 @@ export class JitsiConferenceStateService {
     merge(this.userLeft$, this.events$).subscribe();
   }
 
-  joinConference(username: string) {
-    this.jitsiService.joinConference(username).subscribe();
+  joinConference(username: string, password?: string) {
+    this.jitsiService.joinConference(username, password).subscribe();
   }
 
   leaveConference() {

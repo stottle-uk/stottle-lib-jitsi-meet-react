@@ -19,8 +19,8 @@ export const useJitsiConference = () => {
     };
   }, [conference]);
 
-  const joinConference = (username: string) =>
-    conference.joinConference(username);
+  const joinConference = (username: string, password?: string) =>
+    conference.joinConference(username, password);
 
   const leaveConference = () => conference.leaveConference();
 
