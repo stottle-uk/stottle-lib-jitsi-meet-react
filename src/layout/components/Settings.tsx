@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { JitsiTrack } from '../../conference/models/JitsiTrack';
+import Devices from './Devices';
 
 interface OwnProps {
   isVisible: boolean;
@@ -14,7 +15,7 @@ const Settings: React.FC<OwnProps> = ({
   video,
   subitPassword
 }) => {
-  const usernameEl = useRef<HTMLInputElement>(null);
+  const passwordEl = useRef<HTMLInputElement>(null);
 
   return isVisible ? (
     <div
@@ -30,16 +31,17 @@ const Settings: React.FC<OwnProps> = ({
       Settings
       <div>
         <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" ref={usernameEl} />
+        <input type="password" name="password" id="password" ref={passwordEl} />
         <button
           onClick={() =>
-            usernameEl.current?.value &&
-            subitPassword(usernameEl.current?.value)
+            passwordEl.current?.value &&
+            subitPassword(passwordEl.current?.value)
           }
         >
           Set Password
         </button>
       </div>
+      <Devices audio={audio} video={video} />
     </div>
   ) : (
     <></>

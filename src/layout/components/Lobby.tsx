@@ -13,8 +13,6 @@ const Lobby: React.FC<OwnProps> = ({ joinConference }) => {
   const { localTracks } = useJitsiTracks('Me');
   const { passwordRequired } = useJitsiPassword();
 
-  console.log(passwordRequired);
-
   return (
     <div>
       <div>

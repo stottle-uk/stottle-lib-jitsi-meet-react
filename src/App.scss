@@ -1,0 +1,17 @@
+.video-containor {
+  height: 280px;
+  width: 500px;
+}
+
+video {
+  max-height: 100%;
+  max-width: 100%;
+  width: 100%;
+  border: none;
+  display: block;
+  object-fit: cover;
+}
+
+audio {
+  visibility: hidden;
+}

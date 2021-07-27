@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import './App.css';
+import './App.scss';
 import { useJitsiConnection } from './conference/hooks/useJitsiConnection';
 import { JITSI_SERVICE_URL } from './environment/environment';
 import Conference from './layout/components/Conference';

@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { fromEvent, merge } from 'rxjs';
 import { useJitsiDevices } from '../../conference/hooks/useJitsiDevices';
+import { TRACK_MUTE_CHANGED } from '../../conference/models/events/track';
 import { JitsiTrack } from '../../conference/models/JitsiTrack';
 import AudioTrack from './grid/AudioTrack';
 import VideoTrack from './grid/VideoTrack';
@@ -18,32 +20,30 @@ const Devices: React.FC<OwnProps> = ({ audio, video }) => {
     audioOutDevices,
     audioOutId
   } = useJitsiDevices();
-  const videoEl = useRef<HTMLVideoElement>(null);
-  const audioEl = useRef<HTMLAudioElement>(null);
-
   const [isMuted, setMuted] = useState({
     audio: audio.isMuted(),
     video: video.isMuted()
   });
 
   useEffect(() => {
-    if (videoInDevices.length && audioOutDevices.length) {
-      console.log(audioOutDevices);
-      console.log(videoInDevices);
-    }
-  }, [audioOutDevices, videoInDevices]);
+    const sub = merge(
+      fromEvent<JitsiTrack>(audio, TRACK_MUTE_CHANGED),
+      fromEvent<JitsiTrack>(video, TRACK_MUTE_CHANGED)
+    ).subscribe(track => {
+      setMuted(state => ({ ...state, [track.getType()]: track.isMuted() }));
+    });
+    audio.mute();
+
+    return () => sub.unsubscribe();
+  }, [audio, video]);
 
   const toggleMute = async (t: JitsiTrack) =>
     t.isMuted() ? await t.unmute() : await t.mute();
 
   const playTestSound = () => {
-    if (audioEl.current) {
-      console.log(audioEl.current);
-      const beepLong = new Audio('./assets/sound-go.wav');
-      beepLong.play();
-      // audioEl.current.src = './assets/sound-go.wav';
-      audioEl.current.play();
-    }
+    // todo - make this work!
+    const beepLong = new Audio('./assets/sound-go.wav');
+    beepLong.play();
   };
 
   // https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
@@ -55,6 +55,7 @@ const Devices: React.FC<OwnProps> = ({ audio, video }) => {
       <button onClick={() => toggleMute(video)}>
         {isMuted.video ? 'Video Muted' : 'Video Not Muted'}
       </button>
+      <button onClick={() => playTestSound()}>TEST SOUND</button>
 
       <div>
         <ul>
@@ -108,11 +109,11 @@ const Devices: React.FC<OwnProps> = ({ audio, video }) => {
           </li>
         </ul>
       </div>
-      <AudioTrack track={audio} dispose={false}></AudioTrack>
-      <VideoTrack track={video} dispose={false}></VideoTrack>
-      {/* <video autoPlay={true} ref={videoEl}></video>
-      <audio muted={true} src="./assets/sound-go.wav" ref={audioEl}></audio>
-      <button onClick={playTestSound}>TEST AUDIO</button> */}
+
+      <div className="video-containor">
+        <AudioTrack track={audio} dispose={false}></AudioTrack>
+        <VideoTrack track={video} dispose={false}></VideoTrack>
+      </div>
     </div>
   );
 };
