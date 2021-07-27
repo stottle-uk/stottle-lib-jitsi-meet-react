@@ -137,13 +137,10 @@ export class JitsiMeetService {
   }
 
   leaveConference() {
-    this.confInner$
-      .pipe(
-        take(1),
-        switchMap(conf => conf.leave())
-        // switchMap(() => this.disconnect())
-      )
-      .subscribe();
+    return this.confInner$.pipe(
+      take(1),
+      switchMap(conf => conf.leave())
+    );
   }
 
   addTrack(track: JitsiTrack) {
@@ -160,22 +157,20 @@ export class JitsiMeetService {
   }
 
   replaceTrack(oldTrack: JitsiTrack, options: CreateTracksOptions) {
-    this.confInner$
-      .pipe(
-        take(1),
-        switchMap(conf =>
-          from(this.jitsiMeet.createLocalTracks(options)).pipe(
-            switchMap(newTracks => newTracks),
-            tap(newTrack => conf.replaceTrack(oldTrack, newTrack)),
-            catchError(err =>
-              err.name === 'gum.screensharing_user_canceled'
-                ? of(oldTrack)
-                : throwError(() => new Error(err))
-            )
+    return this.confInner$.pipe(
+      take(1),
+      switchMap(conf =>
+        from(this.jitsiMeet.createLocalTracks(options)).pipe(
+          switchMap(newTracks => newTracks),
+          tap(newTrack => conf.replaceTrack(oldTrack, newTrack)),
+          catchError(err =>
+            err.name === 'gum.screensharing_user_canceled'
+              ? of(oldTrack)
+              : throwError(() => new Error(err))
           )
         )
       )
-      .subscribe();
+    );
   }
 
   getAudioOutputDevice() {

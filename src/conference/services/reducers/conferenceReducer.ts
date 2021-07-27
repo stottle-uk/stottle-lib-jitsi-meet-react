@@ -30,21 +30,17 @@ export const conferenceReducer = (
   action: ConferenceStateActions
 ): ConferenceState => {
   switch (action.type) {
-    case ConferenceStateActionTypes.SetUserData:
-      return { ...state, ...action.payload };
-
     case ConferenceStateActionTypes.SetCreatedTimestamp:
       return { ...state, created: action.payload };
 
     case ConferenceStateActionTypes.SetJoined:
-      return {
-        ...state,
-        isJoined: action.payload,
-        hasLeftRoom: action.payload === false
-      };
+      return { ...state, ...action.payload };
+
+    case ConferenceStateActionTypes.SetLeft:
+      return { ...conferenceInitialState, hasLeftRoom: true };
 
     case ConferenceStateActionTypes.SetKicked:
-      return { ...state, wasKicked: true };
+      return { ...conferenceInitialState, hasLeftRoom: true, wasKicked: true };
 
     default:
       return state;

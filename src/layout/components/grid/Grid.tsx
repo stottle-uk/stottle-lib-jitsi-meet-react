@@ -36,7 +36,11 @@ const getRows = (len: number): string => {
   return `repeat(4, 1fr)`;
 };
 
-const Grid: React.FC = () => {
+interface OwnProps {
+  leaveConference: () => void;
+}
+
+const Grid: React.FC<OwnProps> = ({ leaveConference }) => {
   const { kickParticipant, muteParticipant } = useJitsiActions();
   const { allTracks, localTracks } = useJitsiTracks('ME!');
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -86,7 +90,7 @@ const Grid: React.FC = () => {
             audio={localTracks.audio}
             muteAll={muteAll}
             showSettings={() => setSettingsVisible(!settingsVisible)}
-            leaveConference={() => console.log('HANDLE LEAVE CONFERENCE')}
+            leaveConference={leaveConference}
           />
           <Settings
             isVisible={settingsVisible}

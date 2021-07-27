@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useJitsiConference } from '../../conference/hooks/useJitsiConference';
 import styles from './Conference.module.scss';
 import Grid from './grid/Grid';
@@ -11,21 +11,14 @@ interface OwnProps {
 const Conference: React.FC<OwnProps> = () => {
   const { isJoined, joinConference, leaveConference } = useJitsiConference();
 
-  useEffect(() => {
-    // joinConference();
-
-    return () => {
-      // leaveConference();
-      // dispose();
-    };
-  }, []);
+  // useEffect(() => () => leaveConference(), [leaveConference]);
 
   const join = (username: string, password?: string) =>
     joinConference(username, password);
 
   const renderBody = () => (
     <div className={styles.container}>
-      <Grid />
+      <Grid leaveConference={leaveConference} />
     </div>
   );
 

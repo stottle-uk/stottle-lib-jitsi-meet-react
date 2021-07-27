@@ -40,7 +40,7 @@ export class JitsiDevicesStateService {
   }
 
   replaceTrack(oldTrack: JitsiTrack, options: CreateTracksOptions) {
-    this.jitsiService.replaceTrack(oldTrack, options);
+    this.jitsiService.replaceTrack(oldTrack, options).subscribe();
   }
 
   private handleEvents(event: JitsiDevicesEvents) {

@@ -11,7 +11,7 @@ import {
   SetCreatedTimestamp,
   SetJoined,
   SetKicked,
-  SetUserData
+  SetLeft
 } from './reducers/conferenceActions';
 import {
   conferenceInitialState,
@@ -49,7 +49,7 @@ export class JitsiConferenceStateService {
   }
 
   leaveConference() {
-    this.jitsiService.leaveConference();
+    this.jitsiService.leaveConference().subscribe();
   }
 
   private handleEvents(event: JitsiConferenceEvents) {
@@ -58,11 +58,10 @@ export class JitsiConferenceStateService {
         this.stateInner$.next(new SetCreatedTimestamp(event.payload));
         break;
       case JitsiConferenceEventTypes.Joined:
-        this.stateInner$.next(new SetJoined(true));
-        this.stateInner$.next(new SetUserData(event.payload));
+        this.stateInner$.next(new SetJoined(event.payload));
         break;
       case JitsiConferenceEventTypes.Left:
-        this.stateInner$.next(new SetJoined(false));
+        this.stateInner$.next(new SetLeft());
         break;
       case JitsiConferenceEventTypes.kicked:
         this.stateInner$.next(new SetKicked());
