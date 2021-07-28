@@ -34,7 +34,7 @@ export const conferenceReducer = (
       return { ...state, created: action.payload };
 
     case ConferenceStateActionTypes.SetJoined:
-      return { ...state, ...action.payload };
+      return { ...state, ...action.payload, isJoined: true };
 
     case ConferenceStateActionTypes.SetLeft:
       return { ...conferenceInitialState, hasLeftRoom: true };
