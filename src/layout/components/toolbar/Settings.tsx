@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { JitsiTrack } from '../../conference/models/JitsiTrack';
-import Devices from './Devices';
+import { JitsiTrack } from '../../../conference/models/JitsiTrack';
+import Devices from '../Devices';
 
 interface OwnProps {
   isVisible: boolean;

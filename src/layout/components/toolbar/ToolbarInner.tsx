@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { fromEvent, merge } from 'rxjs';
-import { useJitsiDevices } from '../../conference/hooks/useJitsiDevices';
-import { TRACK_MUTE_CHANGED } from '../../conference/models/events/track';
-import { JitsiTrack } from '../../conference/models/JitsiTrack';
+import { useJitsiDevices } from '../../../conference/hooks/useJitsiDevices';
+import { TRACK_MUTE_CHANGED } from '../../../conference/models/events/track';
+import {
+  CreateTracksOptions,
+  JitsiTrack
+} from '../../../conference/models/JitsiTrack';
 import CallButton from './CallButton';
 import callBtnStyles from './CallButton.module.scss';
 import styles from './Toolbar.module.scss';
@@ -13,9 +16,10 @@ interface OwnProps {
   leaveConference: () => void;
   muteAll: () => void;
   showSettings: () => void;
+  replaceDevice: (oldTrack: JitsiTrack, options: CreateTracksOptions) => void;
 }
 
-const Toolbar: React.FC<OwnProps> = ({
+const ToolbarInner: React.FC<OwnProps> = ({
   audio,
   video,
   muteAll,
@@ -108,4 +112,4 @@ const Toolbar: React.FC<OwnProps> = ({
   );
 };
 
-export default Toolbar;
+export default ToolbarInner;

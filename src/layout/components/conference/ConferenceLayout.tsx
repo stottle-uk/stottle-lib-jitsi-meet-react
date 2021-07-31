@@ -1,5 +1,6 @@
 import React from 'react';
 import Grid from '../grid/Grid';
+import Toolbar from '../toolbar/Toolbar';
 import styles from './Conference.module.scss';
 
 interface OwnProps {
@@ -9,7 +10,8 @@ interface OwnProps {
 const ConferenceLayout: React.FC<OwnProps> = ({ leaveConference }) => {
   return (
     <div className={styles.container}>
-      <Grid leaveConference={leaveConference} />
+      <Grid />
+      <Toolbar />
     </div>
   );
 };

@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useJitsiActions } from '../../../conference/hooks/useJitsiActions';
-import { useJitsiPassword } from '../../../conference/hooks/useJitsiPassword';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
-import Settings from '../Settings';
-import Toolbar from '../Toolbar';
 import styles from './Grid.module.scss';
 import GridParticipant from './GridParticipant';
 
@@ -36,18 +33,9 @@ const getRows = (len: number): string => {
   return `repeat(4, 1fr)`;
 };
 
-interface OwnProps {
-  leaveConference: () => void;
-}
-
-const Grid: React.FC<OwnProps> = ({ leaveConference }) => {
+const Grid: React.FC = () => {
   const { kickParticipant, muteParticipant } = useJitsiActions();
-  const { allTracks, localTracks } = useJitsiTracks('ME!');
-  const [settingsVisible, setSettingsVisible] = useState(false);
-  const { lockRoom } = useJitsiPassword();
-
-  const muteAll = () =>
-    Object.keys(allTracks).forEach(userId => muteParticipant(userId, 'audio'));
+  const { allTracks } = useJitsiTracks('ME!');
 
   const userAction = (userId: string, action: string) => {
     if (action === 'kick') {
@@ -62,6 +50,7 @@ const Grid: React.FC<OwnProps> = ({ leaveConference }) => {
   };
 
   const participantsLength = Object.keys(allTracks).length;
+
   return (
     <>
       <div
@@ -83,23 +72,6 @@ const Grid: React.FC<OwnProps> = ({ leaveConference }) => {
           />
         ))}
       </div>
-      {localTracks.audio && localTracks.video && (
-        <>
-          <Toolbar
-            video={localTracks.video}
-            audio={localTracks.audio}
-            muteAll={muteAll}
-            showSettings={() => setSettingsVisible(!settingsVisible)}
-            leaveConference={leaveConference}
-          />
-          <Settings
-            isVisible={settingsVisible}
-            video={localTracks.video}
-            audio={localTracks.audio}
-            subitPassword={p => lockRoom(p)}
-          />
-        </>
-      )}
     </>
   );
 };
