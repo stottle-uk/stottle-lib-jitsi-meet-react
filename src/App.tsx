@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './App.scss';
 import { useJitsiConnection } from './conference/hooks/useJitsiConnection';
 import { JITSI_SERVICE_URL } from './environment/environment';
-import Conference from './layout/components/Conference';
+import ConferenceContainer from './layout/components/conference/ConferenceContainer';
 
 const connectionOptions = {
   hosts: {
@@ -32,13 +32,12 @@ const App: React.FC = () => {
 
   useEffect(() => () => disconnect(), [disconnect]);
 
-  return isConnected ? (
-    <Conference />
-  ) : (
-    <div>
-      <button onClick={connect}>Connect</button>
-      {isConnecting && <div>CONNECTING JITSI!</div>}
-    </div>
+  return (
+    <ConferenceContainer
+      isConnected={isConnected}
+      isConnecting={isConnecting}
+      connect={connect}
+    />
   );
 };
 

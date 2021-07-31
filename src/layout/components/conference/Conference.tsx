@@ -1,8 +1,7 @@
 import React from 'react';
-import { useJitsiConference } from '../../conference/hooks/useJitsiConference';
-import styles from './Conference.module.scss';
-import Grid from './grid/Grid';
-import Lobby from './Lobby';
+import { useJitsiConference } from '../../../conference/hooks/useJitsiConference';
+import Lobby from '../Lobby';
+import ConferenceLayout from './ConferenceLayout';
 
 interface OwnProps {
   // leaveConference: () => void;
@@ -16,13 +15,11 @@ const Conference: React.FC<OwnProps> = () => {
   const join = (username: string, password?: string) =>
     joinConference(username, password);
 
-  const renderBody = () => (
-    <div className={styles.container}>
-      <Grid leaveConference={leaveConference} />
-    </div>
+  return isJoined ? (
+    <ConferenceLayout leaveConference={leaveConference} />
+  ) : (
+    <Lobby joinConference={join} />
   );
-
-  return isJoined ? renderBody() : <Lobby joinConference={join} />;
 };
 
 export default Conference;

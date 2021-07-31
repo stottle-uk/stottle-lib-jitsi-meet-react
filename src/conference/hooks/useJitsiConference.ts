@@ -24,7 +24,5 @@ export const useJitsiConference = () => {
 
   const leaveConference = () => conference.leaveConference();
 
-  console.log(conferenceState);
-
   return { ...conferenceState, joinConference, leaveConference };
 };
