@@ -34,6 +34,7 @@ const Toolbar: React.FC = () => {
           <Settings
             isVisible={settingsVisible}
             subitPassword={p => lockRoom(p)}
+            onClose={() => setSettingsVisible(!settingsVisible)}
           />
         </>
       )}
