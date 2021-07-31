@@ -1,6 +1,6 @@
 import React from 'react';
 import { useJitsiConference } from '../../../conference/hooks/useJitsiConference';
-import Lobby from '../Lobby';
+import Lobby from '../lobby/Lobby';
 import ConferenceLayout from './ConferenceLayout';
 
 interface OwnProps {
