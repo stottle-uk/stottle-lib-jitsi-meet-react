@@ -1,6 +1,5 @@
 import React from 'react';
-import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
-import Devices from '../Devices';
+import Devices from '../devices/Devices';
 import LobbyForm from './LobbyForm';
 
 interface OwnProps {
@@ -8,17 +7,13 @@ interface OwnProps {
 }
 
 const Lobby: React.FC<OwnProps> = ({ joinConference }) => {
-  const { localTracks } = useJitsiTracks('Me');
-
   return (
     <>
       <LobbyForm joinConference={joinConference} />
 
       <hr />
 
-      {localTracks.audio && localTracks.video && (
-        <Devices audio={localTracks.audio} video={localTracks.video} />
-      )}
+      <Devices />
     </>
   );
 };

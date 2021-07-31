@@ -1,20 +1,12 @@
 import React, { useRef } from 'react';
-import { JitsiTrack } from '../../../conference/models/JitsiTrack';
-import Devices from '../Devices';
+import Devices from '../devices/Devices';
 
 interface OwnProps {
   isVisible: boolean;
-  audio: JitsiTrack;
-  video: JitsiTrack;
   subitPassword: (passwod: string) => void;
 }
 
-const Settings: React.FC<OwnProps> = ({
-  isVisible,
-  audio,
-  video,
-  subitPassword
-}) => {
+const Settings: React.FC<OwnProps> = ({ isVisible, subitPassword }) => {
   const passwordEl = useRef<HTMLInputElement>(null);
 
   return isVisible ? (
@@ -41,7 +33,7 @@ const Settings: React.FC<OwnProps> = ({
           Set Password
         </button>
       </div>
-      <Devices audio={audio} video={video} />
+      <Devices />
     </div>
   ) : (
     <></>

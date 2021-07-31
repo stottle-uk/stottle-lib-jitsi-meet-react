@@ -33,8 +33,6 @@ const Toolbar: React.FC = () => {
           />
           <Settings
             isVisible={settingsVisible}
-            video={localTracks.video}
-            audio={localTracks.audio}
             subitPassword={p => lockRoom(p)}
           />
         </>
