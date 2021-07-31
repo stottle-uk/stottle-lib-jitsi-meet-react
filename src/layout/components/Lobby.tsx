@@ -14,32 +14,38 @@ const Lobby: React.FC<OwnProps> = ({ joinConference }) => {
   const { passwordRequired } = useJitsiPassword();
 
   return (
-    <div>
+    <>
       <div>
-        <label htmlFor="username">Username</label>
-        <input type="text" id="username" ref={usernameEl} />
+        <div className="form-field">
+          <label htmlFor="username">Username:</label>
+          <input type="text" id="username" ref={usernameEl} />
+        </div>
         {passwordRequired && (
-          <input type="text" id="password" ref={passwordEl} />
+          <div className="form-field">
+            <label htmlFor="username">Enter Password:</label>
+            <input type="password" id="password" ref={passwordEl} />
+          </div>
         )}
-
-        <button
-          onClick={() =>
-            joinConference(
-              usernameEl.current?.value || 'NOT KNOWN',
-              passwordEl.current?.value || 'NOT KNOWN'
-            )
-          }
-        >
-          JOIN
-        </button>
+        <div className="form-field">
+          <button
+            type="button"
+            onClick={() =>
+              joinConference(
+                usernameEl.current?.value || 'NOT KNOWN',
+                passwordEl.current?.value || 'NOT KNOWN'
+              )
+            }
+          >
+            JOIN
+          </button>
+        </div>
       </div>
-
       <hr />
 
       {localTracks.audio && localTracks.video && (
         <Devices audio={localTracks.audio} video={localTracks.video} />
       )}
-    </div>
+    </>
   );
 };
 

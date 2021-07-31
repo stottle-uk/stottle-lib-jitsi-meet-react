@@ -12,12 +12,16 @@ const ConferenceContainer: React.FC<OwnProps> = ({
   isConnected,
   isConnecting
 }) => {
-  return isConnected ? (
-    <Conference />
-  ) : (
-    <div>
-      <button onClick={connect}>Connect</button>
-      {isConnecting && <div>CONNECTING JITSI!</div>}
+  return (
+    <div className="container">
+      {isConnected ? (
+        <Conference />
+      ) : (
+        <>
+          <button onClick={connect}>Connect</button>
+          {isConnecting && <div>CONNECTING JITSI!</div>}
+        </>
+      )}
     </div>
   );
 };

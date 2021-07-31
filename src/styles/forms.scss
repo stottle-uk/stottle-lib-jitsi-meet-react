@@ -1,0 +1,32 @@
+.form-field {
+  display: flex;
+  flex-flow: column;
+  margin: 16px 0;
+
+  label {
+    padding: 0 0 8px 0;
+    font-size: 16px;
+  }
+
+  input {
+    padding: 8px;
+    font-size: 16px;
+    border-width: 1px;
+    border-color: #cccccc;
+    background-color: #ffffff;
+    border-style: solid;
+  }
+
+  button {
+    color: #14396a;
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #3866a3;
+    background: #63b8ee;
+
+    &:hover {
+      color: #63b8ee;
+      background: #3866a3;
+    }
+  }
+}
