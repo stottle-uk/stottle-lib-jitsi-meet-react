@@ -9,21 +9,16 @@ interface OwnProps {
 
 const Settings: React.FC<OwnProps> = ({ isVisible, subitPassword }) => {
   return isVisible ? (
-    <div
-      style={{
-        position: 'absolute',
-        top: '25%',
-        bottom: '25%',
-        left: '25%',
-        right: '25%',
-        backgroundColor: '#ccc'
-      }}
-    >
-      <h2>Settings</h2>
-      <hr />
-      <SettingsForm subitPassword={subitPassword} />
-      <hr />
-      <Devices />
+    <div className="modal-backdrop">
+      <div className="modal">
+        <h2>Settings</h2>
+        <div className="modal-content">
+          <hr />
+          <SettingsForm subitPassword={subitPassword} />
+          <hr />
+          <Devices />
+        </div>
+      </div>
     </div>
   ) : (
     <></>

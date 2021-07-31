@@ -65,17 +65,17 @@ const DevicesInner: React.FC<OwnProps> = ({
         <DevicesSelect
           label="Audio Out"
           devices={audioOutDevices}
-          onSelect={d => setAudioOutDevice(d.deviceId)}
+          onSelect={deviceId => setAudioOutDevice(deviceId)}
         />
       </div>
       <div>
         <DevicesSelect
           label="Audio In"
           devices={audioInDevices}
-          onSelect={d =>
+          onSelect={deviceId =>
             replaceDevice(audio, {
               devices: ['audio'],
-              micDeviceId: d.deviceId
+              micDeviceId: deviceId
             })
           }
         />
@@ -84,10 +84,10 @@ const DevicesInner: React.FC<OwnProps> = ({
         <DevicesSelect
           label="Video"
           devices={videoInDevices}
-          onSelect={d =>
+          onSelect={deviceId =>
             replaceDevice(audio, {
               devices: ['video'],
-              micDeviceId: d.deviceId
+              micDeviceId: deviceId
             })
           }
         />

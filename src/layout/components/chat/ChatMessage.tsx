@@ -1,5 +1,5 @@
 import React from 'react';
-import { JitsiChatMessage } from '../../conference/services/reducers/chatReducer';
+import { JitsiChatMessage } from '../../../conference/services/reducers/chatReducer';
 import styles from './ChatMessage.module.scss';
 
 interface Props {
