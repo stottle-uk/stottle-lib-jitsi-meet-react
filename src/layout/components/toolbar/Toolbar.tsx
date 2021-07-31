@@ -4,7 +4,7 @@ import { useJitsiConference } from '../../../conference/hooks/useJitsiConference
 import { useJitsiDevices } from '../../../conference/hooks/useJitsiDevices';
 import { useJitsiPassword } from '../../../conference/hooks/useJitsiPassword';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
-import Settings from './Settings';
+import Settings from '../settings/Settings';
 import ToolbarInner from './ToolbarInner';
 
 const Toolbar: React.FC = () => {

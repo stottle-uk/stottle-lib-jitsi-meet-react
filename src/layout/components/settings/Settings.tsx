@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import Devices from '../devices/Devices';
+import SettingsForm from './SettingsForm';
 
 interface OwnProps {
   isVisible: boolean;
@@ -7,8 +8,6 @@ interface OwnProps {
 }
 
 const Settings: React.FC<OwnProps> = ({ isVisible, subitPassword }) => {
-  const passwordEl = useRef<HTMLInputElement>(null);
-
   return isVisible ? (
     <div
       style={{
@@ -20,19 +19,10 @@ const Settings: React.FC<OwnProps> = ({ isVisible, subitPassword }) => {
         backgroundColor: '#ccc'
       }}
     >
-      Settings
-      <div>
-        <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" ref={passwordEl} />
-        <button
-          onClick={() =>
-            passwordEl.current?.value &&
-            subitPassword(passwordEl.current?.value)
-          }
-        >
-          Set Password
-        </button>
-      </div>
+      <h2>Settings</h2>
+      <hr />
+      <SettingsForm subitPassword={subitPassword} />
+      <hr />
       <Devices />
     </div>
   ) : (
