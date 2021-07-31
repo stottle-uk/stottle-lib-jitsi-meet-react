@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { fromEvent, merge } from 'rxjs';
-import { TRACK_MUTE_CHANGED } from '../../../conference/models/events/track';
+import React from 'react';
 import {
   CreateTracksOptions,
   JitsiTrack
 } from '../../../conference/models/JitsiTrack';
-import AudioTrack from '../grid/AudioTrack';
-import VideoTrack from '../grid/VideoTrack';
 import DevicesSelect from './DevicesSelect';
+import DevicesTracks from './DevicesTracks';
 
 interface OwnProps {
   videoInDevices: MediaDeviceInfo[];
@@ -30,26 +27,6 @@ const DevicesInner: React.FC<OwnProps> = ({
   audio,
   video
 }) => {
-  const [isMuted, setMuted] = useState({
-    audio: audio.isMuted(),
-    video: video.isMuted()
-  });
-
-  useEffect(() => {
-    const sub = merge(
-      fromEvent<JitsiTrack>(audio, TRACK_MUTE_CHANGED),
-      fromEvent<JitsiTrack>(video, TRACK_MUTE_CHANGED)
-    ).subscribe(track => {
-      setMuted(state => ({ ...state, [track.getType()]: track.isMuted() }));
-    });
-    audio.mute();
-
-    return () => sub.unsubscribe();
-  }, [audio, video]);
-
-  const toggleMute = async (t: JitsiTrack) =>
-    t.isMuted() ? await t.unmute() : await t.mute();
-
   const playTestSound = () => {
     // todo - make this work!
     const beepLong = new Audio('./assets/sound-go.wav');
@@ -85,24 +62,14 @@ const DevicesInner: React.FC<OwnProps> = ({
           label="Video"
           devices={videoInDevices}
           onSelect={deviceId =>
-            replaceDevice(audio, {
+            replaceDevice(video, {
               devices: ['video'],
               micDeviceId: deviceId
             })
           }
         />
       </div>
-
-      <div className="video-containor">
-        <AudioTrack track={audio} dispose={false}></AudioTrack>
-        <VideoTrack track={video} dispose={false}></VideoTrack>
-      </div>
-      <button onClick={() => toggleMute(audio)}>
-        {isMuted.audio ? 'Audio Muted' : 'Audio Not Muted'}
-      </button>
-      <button onClick={() => toggleMute(video)}>
-        {isMuted.video ? 'Video Muted' : 'Video Not Muted'}
-      </button>
+      <DevicesTracks />
     </div>
   );
 };
