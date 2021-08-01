@@ -40,8 +40,6 @@ const ToolbarInner: React.FC<OwnProps> = ({
     ).subscribe(track => {
       setMuted(state => ({ ...state, [track.getType()]: track.isMuted() }));
     });
-    audio.mute();
-    // video.mute();
 
     return () => sub.unsubscribe();
   }, [audio, video]);
@@ -67,19 +65,20 @@ const ToolbarInner: React.FC<OwnProps> = ({
             }`}
           />
         </div>
-        <div className={styles.btn}>
-          <CallButton
-            caption={'Desktop'}
-            logo={'desktop'}
-            onClick={() => startScreenShare(video)}
-            className={callBtnStyles['call-btn-camera']}
-          />
-        </div>
+
         <div className={styles.btn}>
           <CallButton
             caption={isMuted.video ? 'Cam off' : 'Cam on'}
             logo={isMuted.video ? 'video-slash' : 'video'}
             onClick={() => toggleMute(video)}
+            className={callBtnStyles['call-btn-camera']}
+          />
+        </div>
+        <div className={styles.btn}>
+          <CallButton
+            caption={'Desktop'}
+            logo={'desktop'}
+            onClick={() => startScreenShare(video)}
             className={callBtnStyles['call-btn-camera']}
           />
         </div>
@@ -91,14 +90,14 @@ const ToolbarInner: React.FC<OwnProps> = ({
             className={callBtnStyles['call-btn-hangup']}
           />
         </div>
-        <div className={styles.btn}>
+        {/* <div className={styles.btn}>
           <CallButton
             caption="Mute All"
             logo={'volume-mute'}
             onClick={() => muteAll()}
             className={callBtnStyles['call-btn-hangup']}
           />
-        </div>
+        </div> */}
         <div className={styles.btn}>
           <CallButton
             caption="Settings"

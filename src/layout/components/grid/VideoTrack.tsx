@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { fromEvent } from 'rxjs';
 import { TRACK_MUTE_CHANGED } from '../../../conference/models/events/track';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
@@ -6,16 +6,14 @@ import { JitsiTrack } from '../../../conference/models/JitsiTrack';
 interface OwnProps {
   track: JitsiTrack;
   dispose?: boolean;
+  onMuteChange: (muted: boolean) => void;
 }
 
-const VideoTrack: React.FC<OwnProps> = ({ track, dispose }) => {
+const VideoTrack: React.FC<OwnProps> = ({ track, dispose, onMuteChange }) => {
   const videoEl = useRef<HTMLVideoElement | null>(null);
-  const [isMuted, setIsMuted] = useState(track.isMuted());
 
   useEffect(() => {
-    if (!videoEl.current) return;
-
-    track.attach(videoEl.current);
+    videoEl.current && track.attach(videoEl.current);
 
     return () => {
       track.isLocal() && dispose && track.dispose();
@@ -24,17 +22,15 @@ const VideoTrack: React.FC<OwnProps> = ({ track, dispose }) => {
 
   useEffect(() => {
     const sub = fromEvent<JitsiTrack>(track, TRACK_MUTE_CHANGED).subscribe(
-      track => setIsMuted(track.isMuted())
+      track => onMuteChange(track.isMuted())
     );
 
     return () => {
       sub.unsubscribe();
     };
-  }, [track]);
+  }, [track, onMuteChange]);
 
-  return (
-    <video autoPlay={true} ref={videoEl} className={isMuted ? 'muted' : ''} />
-  );
+  return <video autoPlay={true} ref={videoEl} />;
 };
 
 export default memo(VideoTrack);

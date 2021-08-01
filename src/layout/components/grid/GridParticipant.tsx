@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
 import styles from './Grid.module.scss';
 import ParticipantTrack from './ParticipantTrack';
@@ -26,6 +26,9 @@ const GridParticipant: React.FC<OwnProps> = ({
   userAction
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isAudioMuted, setAudioMuted] = useState(false);
+  const [isVideoMuted, setVideoMuted] = useState(false);
+
   const { audio, video } = tracks.reduce<ExtractedTracks>(
     (prev, curr) => ({ ...prev, [curr.getType()]: curr }),
     {
@@ -34,18 +37,20 @@ const GridParticipant: React.FC<OwnProps> = ({
     }
   );
 
+  console.log('muted', { isVideoMuted, isAudioMuted });
+
   return (
     <div key={id} className={styles.gridParticipant} ref={containerRef}>
       <div className={styles.participant}>
         {video && (
           <div className={styles.video}>
-            <ParticipantTrack track={video} key={video.getId()} />
+            <ParticipantTrack onMuteChange={setAudioMuted} track={video} />
           </div>
         )}
 
         {audio && (
           <div className={styles.audio}>
-            <ParticipantTrack track={audio} key={audio.getId()} />
+            <ParticipantTrack onMuteChange={setVideoMuted} track={audio} />
           </div>
         )}
 

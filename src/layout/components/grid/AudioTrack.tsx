@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { fromEvent } from 'rxjs';
 import { TRACK_MUTE_CHANGED } from '../../../conference/models/events/track';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
@@ -6,11 +6,11 @@ import { JitsiTrack } from '../../../conference/models/JitsiTrack';
 interface OwnProps {
   track: JitsiTrack;
   dispose?: boolean;
+  onMuteChange: (muted: boolean) => void;
 }
 
-const AudioTrack: React.FC<OwnProps> = ({ track, dispose = true }) => {
+const AudioTrack: React.FC<OwnProps> = ({ track, dispose, onMuteChange }) => {
   const audioEl = useRef<HTMLAudioElement | null>(null);
-  const [isMuted, setIsMuted] = useState(track.isMuted());
 
   useEffect(() => {
     if (!audioEl.current) return;
@@ -28,17 +28,15 @@ const AudioTrack: React.FC<OwnProps> = ({ track, dispose = true }) => {
 
   useEffect(() => {
     const sub = fromEvent<JitsiTrack>(track, TRACK_MUTE_CHANGED).subscribe(
-      track => setIsMuted(track.isMuted())
+      track => onMuteChange(track.isMuted())
     );
 
     return () => {
       sub.unsubscribe();
     };
-  }, [track]);
+  }, [track, onMuteChange]);
 
-  return (
-    <audio autoPlay={true} ref={audioEl} className={isMuted ? 'muted' : ''} />
-  );
+  return <audio autoPlay={true} ref={audioEl} />;
 };
 
 export default memo(AudioTrack);

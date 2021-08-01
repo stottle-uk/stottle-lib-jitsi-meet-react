@@ -5,14 +5,15 @@ import VideoTrack from './VideoTrack';
 
 interface OwnProps {
   track: JitsiTrack;
+  onMuteChange: (muted: boolean) => void;
 }
 
-const ParticipantTrack: React.FC<OwnProps> = ({ track }) => (
+const ParticipantTrack: React.FC<OwnProps> = ({ track, onMuteChange }) => (
   <>
     {track.getType() === 'video' ? (
-      <VideoTrack track={track} />
+      <VideoTrack track={track} onMuteChange={onMuteChange} />
     ) : (
-      <AudioTrack track={track} />
+      <AudioTrack track={track} onMuteChange={onMuteChange} />
     )}
   </>
 );
