@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
-import AudioTrack from '../grid/AudioTrack';
-import VideoTrack from '../grid/VideoTrack';
+import AudioTrack from '../tracks/AudioTrack';
+import VideoTrack from '../tracks/VideoTrack';
 
 interface OwnProps {
   audio: JitsiTrack;

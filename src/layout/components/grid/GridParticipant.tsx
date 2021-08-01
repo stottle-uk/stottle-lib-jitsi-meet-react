@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
+import ParticipantTrack from '../tracks/ParticipantTrack';
 import styles from './Grid.module.scss';
-import ParticipantTrack from './ParticipantTrack';
 import Speaking from './Speaking';
 
 interface ExtractedTracks {
