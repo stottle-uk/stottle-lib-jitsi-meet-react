@@ -1,7 +1,7 @@
 import React from 'react';
 import { useJitsiDevices } from '../../../conference/hooks/useJitsiDevices';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
-import DevicesInner from './DevicesInner';
+import DevicesLayout from './DevicesLayout';
 
 const Devices: React.FC = () => {
   const {
@@ -17,7 +17,7 @@ const Devices: React.FC = () => {
   return (
     <>
       {localTracks.audio && localTracks.video && (
-        <DevicesInner
+        <DevicesLayout
           video={localTracks.video}
           audio={localTracks.audio}
           replaceDevice={replaceDevice}

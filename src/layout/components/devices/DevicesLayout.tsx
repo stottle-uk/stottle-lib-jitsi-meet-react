@@ -17,7 +17,7 @@ interface OwnProps {
   setAudioOutDevice: (deviceId: string) => void;
 }
 
-const DevicesInner: React.FC<OwnProps> = ({
+const DevicesLayout: React.FC<OwnProps> = ({
   replaceDevice,
   setAudioOutDevice,
   videoInDevices,
@@ -42,6 +42,7 @@ const DevicesInner: React.FC<OwnProps> = ({
         <DevicesSelect
           label="Audio Out"
           devices={audioOutDevices}
+          selectedDeviceId={audioOutId}
           onSelect={deviceId => setAudioOutDevice(deviceId)}
         />
       </div>
@@ -49,6 +50,7 @@ const DevicesInner: React.FC<OwnProps> = ({
         <DevicesSelect
           label="Audio In"
           devices={audioInDevices}
+          selectedDeviceId={audio.getDeviceId()}
           onSelect={deviceId =>
             replaceDevice(audio, {
               devices: ['audio'],
@@ -61,6 +63,7 @@ const DevicesInner: React.FC<OwnProps> = ({
         <DevicesSelect
           label="Video"
           devices={videoInDevices}
+          selectedDeviceId={video.getDeviceId()}
           onSelect={deviceId =>
             replaceDevice(video, {
               devices: ['video'],
@@ -69,9 +72,9 @@ const DevicesInner: React.FC<OwnProps> = ({
           }
         />
       </div>
-      <DevicesTracks />
+      <DevicesTracks video={video} audio={audio} />
     </div>
   );
 };
 
-export default DevicesInner;
+export default DevicesLayout;
