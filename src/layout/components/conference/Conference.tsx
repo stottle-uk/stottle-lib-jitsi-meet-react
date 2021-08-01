@@ -10,7 +10,7 @@ interface OwnProps {
 const Conference: React.FC<OwnProps> = () => {
   const { isJoined, joinConference, leaveConference } = useJitsiConference();
 
-  // useEffect(() => () => leaveConference(), [leaveConference]);
+  // useEffect(() => () => leaveConference(), []);
 
   const join = (username: string, password?: string) =>
     joinConference(username, password);
@@ -18,7 +18,7 @@ const Conference: React.FC<OwnProps> = () => {
   return isJoined ? (
     <ConferenceLayout leaveConference={leaveConference} />
   ) : (
-    <Lobby joinConference={join} />
+    <Lobby style={{ maxWidth: '650px' }} joinConference={join} />
   );
 };
 

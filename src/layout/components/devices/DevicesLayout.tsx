@@ -27,17 +27,8 @@ const DevicesLayout: React.FC<OwnProps> = ({
   audio,
   video
 }) => {
-  const playTestSound = () => {
-    // todo - make this work!
-    const beepLong = new Audio('./assets/sound-go.wav');
-    beepLong.play();
-  };
-
-  // https://github.com/webrtc/samples/blob/gh-pages/src/content/devices/input-output/js/main.js
   return (
     <div>
-      <button onClick={() => playTestSound()}>TEST SOUND</button>
-
       <div>
         <DevicesSelect
           label="Audio Out"

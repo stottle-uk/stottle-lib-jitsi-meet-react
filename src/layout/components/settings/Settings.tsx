@@ -16,13 +16,14 @@ const Settings: React.FC<OwnProps> = ({
   return isVisible ? (
     <div className="modal-backdrop">
       <div className="modal">
-        <h2>
-          Settings <button onClick={() => onClose()}>X</button>
-        </h2>
+        <div className="modal-header">
+          <h2>Settings</h2>
+          <div>
+            <button onClick={() => onClose()}>X</button>
+          </div>
+        </div>
         <div className="modal-content">
-          <hr />
           <SettingsForm subitPassword={subitPassword} />
-          <hr />
           <Devices />
         </div>
       </div>
