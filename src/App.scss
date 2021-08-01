@@ -1,6 +1,7 @@
 @import './styles/reset';
 @import './styles/forms';
 @import './styles/modal';
+@import './styles/grid';
 
 html,
 body,
@@ -14,6 +15,7 @@ body,
   display: flex;
 
   color: #333;
+  background-color: #eee;
 }
 
 .container {

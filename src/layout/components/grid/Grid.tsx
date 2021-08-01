@@ -1,8 +1,7 @@
 import React from 'react';
 import { useJitsiActions } from '../../../conference/hooks/useJitsiActions';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
-import styles from './Grid.module.scss';
-import GridParticipant from './GridParticipant';
+import GridItem from './GridItem';
 
 const getCols = (len: number): string => {
   if (len <= 2) {
@@ -54,16 +53,17 @@ const Grid: React.FC = () => {
   return (
     <>
       <div
-        className={styles.container}
+        className="grid-container"
         style={{
           gridTemplateColumns: getCols(participantsLength),
           gridTemplateRows: getRows(participantsLength)
         }}
       >
         {Object.entries(allTracks).map(([id, tracksInner]) => (
-          <GridParticipant
+          <GridItem
             key={id}
-            id={id}
+            userId={id}
+            className="grid-item"
             displayUserActions={false}
             userAction={userAction}
             username={tracksInner.username}

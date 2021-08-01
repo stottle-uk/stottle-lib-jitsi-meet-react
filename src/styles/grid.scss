@@ -1,0 +1,39 @@
+.grid-container {
+  display: grid;
+  column-gap: 16px;
+  row-gap: 16px;
+
+  .grid-item {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    .item {
+      position: relative;
+      width: 100%;
+
+      .item-track-video {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    .item-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      background-color: rgba($color: #333, $alpha: 0.4);
+
+      p {
+        color: #fff;
+        padding-left: 12px;
+      }
+    }
+  }
+}

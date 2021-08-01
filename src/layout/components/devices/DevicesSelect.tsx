@@ -16,13 +16,12 @@ const DevicesSelect: React.FC<OwnProps> = ({
   return (
     <div className="form-field">
       <label htmlFor="">{label}</label>
-      <select onChange={d => d.target.value && onSelect(d.target.value)}>
+      <select
+        defaultValue={selectedDeviceId}
+        onChange={d => d.target.value && onSelect(d.target.value)}
+      >
         {devices.map(d => (
-          <option
-            key={d.deviceId}
-            value={d.deviceId}
-            selected={d.deviceId === selectedDeviceId}
-          >
+          <option key={d.deviceId} value={d.deviceId}>
             {d.label}
           </option>
         ))}
