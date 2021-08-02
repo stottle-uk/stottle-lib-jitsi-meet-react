@@ -6,6 +6,7 @@ import {
   faMicrophone,
   faMicrophoneSlash,
   faPhoneSlash,
+  faUser,
   faVideo,
   faVideoSlash,
   faVolumeMute
@@ -25,7 +26,8 @@ library.add(
   faPhoneSlash,
   faVolumeMute,
   faDesktop,
-  faCog
+  faCog,
+  faUser
 );
 
 ReactDOM.render(

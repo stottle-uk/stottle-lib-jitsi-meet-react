@@ -22,6 +22,7 @@ export interface JitsiTrack extends JitsiEventEmitter<JitsiTrack> {
   type: TrackType;
   addFeature: Function;
   removeFeature: Function;
+  videoType: null | 'camera' | 'desktop';
   isLocal(): boolean;
   getType(): this['type'];
   mute(): Promise<void>;

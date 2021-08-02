@@ -52,6 +52,11 @@ const ToolbarInner: React.FC<OwnProps> = ({
       devices: ['desktop']
     });
 
+  const stopScreenShare = (oldTrack: JitsiTrack) =>
+    replaceDevice(oldTrack, {
+      devices: ['video']
+    });
+
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
@@ -76,9 +81,17 @@ const ToolbarInner: React.FC<OwnProps> = ({
         </div>
         <div className={styles.btn}>
           <CallButton
-            caption={'Desktop'}
-            logo={'desktop'}
-            onClick={() => startScreenShare(video)}
+            caption={
+              video.videoType === 'desktop'
+                ? 'Turn off Screen Share'
+                : 'Screen Share'
+            }
+            logo={video.videoType === 'desktop' ? 'user' : 'desktop'}
+            onClick={() =>
+              video.videoType === 'desktop'
+                ? stopScreenShare(video)
+                : startScreenShare(video)
+            }
             className={callBtnStyles['call-btn-camera']}
           />
         </div>
