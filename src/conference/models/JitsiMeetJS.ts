@@ -71,7 +71,10 @@ export interface JitsiMeetJS {
     vadProcessor: any
   ) => any;
   createAudioMixer: () => any;
-  getActiveAudioDevice: () => any;
+  getActiveAudioDevice: () => Promise<{
+    deviceId: string;
+    deviceLabel: string;
+  }>;
   isDeviceListAvailable: () => Promise<boolean>;
   isDeviceChangeAvailable: (deviceType: string) => boolean;
   isMultipleAudioInputSupported: () => boolean;
