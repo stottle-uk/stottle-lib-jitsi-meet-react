@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
+import CallButton from '../toolbar/CallButton';
 import AudioTrack from '../tracks/AudioTrack';
 import VideoTrack from '../tracks/VideoTrack';
 
@@ -31,12 +32,22 @@ const DevicesTracks: React.FC<OwnProps> = ({ audio, video }) => {
           dispose={false}
         ></VideoTrack>
       </div>
-      <button onClick={() => toggleMute(audio)}>
-        {isMuted.audio ? 'Audio Muted' : 'Audio Not Muted'}
-      </button>
-      <button onClick={() => toggleMute(video)}>
-        {isMuted.video ? 'Video Muted' : 'Video Not Muted'}
-      </button>
+      <div className="toolbar">
+        <div className="btn">
+          <CallButton
+            title={isMuted.audio ? 'Mic off' : 'Mic on'}
+            logo={isMuted.audio ? 'microphone-slash' : 'microphone'}
+            onClick={() => toggleMute(audio)}
+          />
+        </div>
+        <div className="btn">
+          <CallButton
+            title={isMuted.video ? 'Cam off' : 'Cam on'}
+            logo={isMuted.video ? 'video-slash' : 'video'}
+            onClick={() => toggleMute(video)}
+          />
+        </div>
+      </div>
     </>
   );
 };
