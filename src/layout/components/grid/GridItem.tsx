@@ -4,13 +4,12 @@ import { JitsiTrack } from '../../../conference/models/JitsiTrack';
 import ParticipantTrack from '../tracks/ParticipantTrack';
 import Speaking from './Speaking';
 
-interface OwnProps extends React.ClassAttributes<HTMLDivElement> {
+interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
   userId: string;
   username?: string;
   tracks: JitsiTrack[];
   participantsLength: number;
   displayUserActions: boolean;
-  className: string;
   userAction: (userId: string, type: string) => void;
 }
 

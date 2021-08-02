@@ -7,8 +7,6 @@ import {
   JitsiTrack
 } from '../../../conference/models/JitsiTrack';
 import CallButton from './CallButton';
-import callBtnStyles from './CallButton.module.scss';
-import styles from './Toolbar.module.scss';
 
 interface OwnProps {
   audio: JitsiTrack;
@@ -22,7 +20,6 @@ interface OwnProps {
 const ToolbarInner: React.FC<OwnProps> = ({
   audio,
   video,
-  muteAll,
   leaveConference,
   showSettings
 }) => {
@@ -58,65 +55,51 @@ const ToolbarInner: React.FC<OwnProps> = ({
     });
 
   return (
-    <div className={styles.container}>
-      <div className={styles.toolbar}>
-        <div className={styles.btn}>
+    <div className="toolbar-container">
+      <div className="toolbar">
+        <div className="btn">
           <CallButton
-            caption={isMuted.audio ? 'Mic off' : 'Mic on'}
+            title={isMuted.audio ? 'Mic off' : 'Mic on'}
             logo={isMuted.audio ? 'microphone-slash' : 'microphone'}
             onClick={() => toggleMute(audio)}
-            className={`${callBtnStyles.callBtnAudio} ${
-              isMuted.audio && callBtnStyles.audioMuted
-            }`}
           />
         </div>
-
-        <div className={styles.btn}>
+        <div className="btn">
           <CallButton
-            caption={isMuted.video ? 'Cam off' : 'Cam on'}
+            title={isMuted.video ? 'Cam off' : 'Cam on'}
             logo={isMuted.video ? 'video-slash' : 'video'}
             onClick={() => toggleMute(video)}
-            className={callBtnStyles['call-btn-camera']}
           />
         </div>
-        <div className={styles.btn}>
+        <div className="btn">
           <CallButton
-            caption={
+            title={
               video.videoType === 'desktop'
                 ? 'Turn off Screen Share'
                 : 'Screen Share'
             }
-            logo={video.videoType === 'desktop' ? 'user' : 'desktop'}
+            logo={'desktop'}
+            color={video.videoType === 'desktop' ? 'green' : 'white'}
             onClick={() =>
               video.videoType === 'desktop'
                 ? stopScreenShare(video)
                 : startScreenShare(video)
             }
-            className={callBtnStyles['call-btn-camera']}
           />
         </div>
-        <div className={styles.btn}>
+        <div className="btn">
           <CallButton
-            caption="Exit Call"
+            title="Exit Call"
             logo={'phone-slash'}
+            color="red"
             onClick={() => leaveConference()}
-            className={callBtnStyles['call-btn-hangup']}
           />
         </div>
-        {/* <div className={styles.btn}>
+        <div className="btn">
           <CallButton
-            caption="Mute All"
-            logo={'volume-mute'}
-            onClick={() => muteAll()}
-            className={callBtnStyles['call-btn-hangup']}
-          />
-        </div> */}
-        <div className={styles.btn}>
-          <CallButton
-            caption="Settings"
+            title="Settings"
             logo={'cog'}
             onClick={() => showSettings()}
-            className={callBtnStyles['call-btn-last']}
           />
         </div>
       </div>
