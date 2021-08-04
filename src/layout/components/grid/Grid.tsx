@@ -59,15 +59,15 @@ const Grid: React.FC = () => {
           gridTemplateRows: getRows(participantsLength)
         }}
       >
-        {Object.entries(allTracks).map(([id, tracksInner]) => (
+        {allTracks.map(user => (
           <GridItem
-            key={id}
-            userId={id}
+            key={user.userId}
             className="grid-item"
+            userId={user.userId}
             displayUserActions={false}
             userAction={userAction}
-            username={tracksInner.username}
-            tracks={tracksInner.tracks}
+            username={user.username}
+            tracks={Object.values(user.tracks)}
             participantsLength={participantsLength}
           />
         ))}

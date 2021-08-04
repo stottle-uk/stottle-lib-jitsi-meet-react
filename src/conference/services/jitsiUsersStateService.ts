@@ -1,5 +1,5 @@
 import { merge, ReplaySubject } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { scanState, typeOf } from '../models/events/action';
 import {
   JitsiConferenceEvents,
@@ -14,13 +14,6 @@ import {
 import { usersInitialState, usersReducer } from './reducers/usersReducer';
 
 export class JitsiUsersStateService {
-  private createRemoteParticipents$ = this.jitsiService.conferenceEvents$.pipe(
-    typeOf(JitsiConferenceEventTypes.ConnectionEstablished),
-    switchMap(() => this.jitsiService.getParticipants()),
-    tap(user =>
-      this.stateInner$.next(new AddUser({ userId: user.getId(), user }))
-    )
-  );
   private events$ = this.jitsiService.conferenceEvents$.pipe(
     typeOf(
       JitsiConferenceEventTypes.UserLeft,
@@ -35,7 +28,7 @@ export class JitsiUsersStateService {
   constructor(private jitsiService: JitsiMeetService) {}
 
   init() {
-    merge(this.createRemoteParticipents$, this.events$).subscribe();
+    merge(this.events$).subscribe();
   }
 
   private handleEvents(event: JitsiConferenceEvents) {

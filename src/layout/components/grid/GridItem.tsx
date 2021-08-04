@@ -44,8 +44,6 @@ const GridItem: React.FC<OwnProps> = ({
     }
   };
 
-  console.log('muted', { isVideoMuted, isAudioMuted });
-
   return (
     <div {...props}>
       <div className="item">

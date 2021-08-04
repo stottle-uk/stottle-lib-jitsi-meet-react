@@ -1,59 +1,67 @@
 import { useEffect, useState } from 'react';
-import { merge } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 import { JitsiTrack } from '../models/JitsiTrack';
 import {
   tracksInitialState,
   TracksState
 } from '../services/reducers/tracksReducer';
-import {
-  usersInitialState,
-  UsersState
-} from '../services/reducers/usersReducer';
-import { useJitsiTracksState, useJitsiUsersState } from './useJitsiMeet';
+import { useJitsiConference } from './useJitsiConference';
+import { useJitsiTracksState } from './useJitsiMeet';
+import { useJitsiUsers } from './useJitsiUsers';
+
+interface UserTrack {
+  userId: string;
+  username: string;
+  tracks: {
+    audio?: JitsiTrack;
+    video?: JitsiTrack;
+  };
+}
 
 export const useJitsiTracks = (username: string) => {
   const tracks = useJitsiTracksState();
-  const users = useJitsiUsersState();
+  const { myUserId } = useJitsiConference();
+  const { userIds, users } = useJitsiUsers();
 
   const [tracksState, setTracksState] =
     useState<TracksState>(tracksInitialState);
-  const [usersState, setUsersState] = useState<UsersState>(usersInitialState);
 
   useEffect(() => {
-    const tracks$ = tracks.state$.pipe(tap(state => setTracksState(state)));
-    const users$ = users.state$.pipe(tap(state => setUsersState(state)));
-
-    const sub = merge(tracks$, users$).subscribe();
+    const sub = tracks.state$
+      .pipe(tap(state => setTracksState(state)))
+      .subscribe();
 
     return () => {
       sub.unsubscribe();
     };
-  }, [tracks, users]);
+  }, [tracks]);
+
+  const reduceTracks = (tracks: JitsiTrack[]) =>
+    tracks.reduce<UserTrack['tracks']>(
+      (prev, curr) => ({ ...prev, [curr.getType()]: curr }),
+      {}
+    );
+
+  const allTracks = userIds.reduce<UserTrack[]>(
+    (tracks, userId) => [
+      ...tracks,
+      {
+        userId: userId,
+        username: users[userId].getDisplayName(),
+        tracks: reduceTracks(users[userId].getTracks())
+      }
+    ],
+    [
+      {
+        userId: myUserId,
+        username,
+        tracks: reduceTracks(tracksState.localTracks)
+      }
+    ]
+  );
 
   return {
-    localTracks: tracksState.localTracks.reduce(
-      (prev, curr) => ({ ...prev, [curr.getType()]: curr }),
-      {} as {
-        audio: JitsiTrack | undefined;
-        video: JitsiTrack | undefined;
-      }
-    ),
-    allTracks: {
-      local: {
-        username: username,
-        tracks: Object.values(tracksState.localTracks)
-      },
-      ...usersState.userIds.reduce(
-        (prev, curr) => ({
-          ...prev,
-          [curr]: {
-            username: usersState.users[curr].getDisplayName(),
-            tracks: tracksState.remoteTracks[curr] || []
-          }
-        }),
-        {}
-      )
-    }
+    localTracks: reduceTracks(tracksState.localTracks),
+    allTracks
   };
 };
