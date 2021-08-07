@@ -67,8 +67,8 @@ const Grid: React.FC = () => {
             displayUserActions={false}
             userAction={userAction}
             username={user.username}
-            tracks={Object.values(user.tracks)}
-            participantsLength={participantsLength}
+            audio={user.tracks.audio}
+            video={user.tracks.video}
           />
         ))}
       </div>

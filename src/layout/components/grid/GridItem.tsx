@@ -1,14 +1,15 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
-import ParticipantTrack from '../tracks/ParticipantTrack';
+import AudioTrack from '../tracks/AudioTrack';
+import VideoTrack from '../tracks/VideoTrack';
 import Speaking from './Speaking';
 
 interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
   userId: string;
   username?: string;
-  tracks: JitsiTrack[];
-  participantsLength: number;
+  video?: JitsiTrack;
+  audio?: JitsiTrack;
   displayUserActions: boolean;
   userAction: (userId: string, type: string) => void;
 }
@@ -16,7 +17,8 @@ interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
 const GridItem: React.FC<OwnProps> = ({
   userId,
   username,
-  tracks,
+  video,
+  audio,
   displayUserActions,
   userAction,
   ...props
@@ -25,40 +27,38 @@ const GridItem: React.FC<OwnProps> = ({
   const [isVideoMuted, setVideoMuted] = useState(false);
 
   useEffect(() => {
-    tracks.forEach(t => {
-      if (t.getType() === 'video') {
-        setVideoMuted(t.isMuted());
-      }
-      if (t.getType() === 'audio') {
-        setAudioMuted(t.isMuted());
-      }
-    });
-  }, [tracks]);
+    video && setVideoMuted(video.isMuted());
+    audio && setAudioMuted(audio.isMuted());
+  }, [video, audio]);
 
   const onMuteChange = (isMuted: boolean, track: JitsiTrack) => {
-    if (track.getType() === 'video') {
-      setVideoMuted(isMuted);
-    }
-    if (track.getType() === 'audio') {
-      setAudioMuted(isMuted);
-    }
+    track.getType() === 'video' && setVideoMuted(isMuted);
+    track.getType() === 'audio' && setAudioMuted(isMuted);
   };
 
   return (
     <div {...props}>
       <div className="item">
-        {tracks.map(t => (
-          <div className={`item-track-${t.getType()}`} key={t.getId()}>
-            <ParticipantTrack
-              onMuteChange={m => onMuteChange(m, t)}
-              track={t}
-            />
-          </div>
-        ))}
-        {isVideoMuted && (
-          <div className="item-track-video">
-            <p>no cam</p>
-          </div>
+        {video && (
+          <>
+            <div className={`item-track-video ${isVideoMuted && 'hidden'}`}>
+              <VideoTrack
+                onMuteChange={m => onMuteChange(m, video)}
+                track={video}
+              />
+            </div>
+            {isVideoMuted && (
+              <div className="item-track-video">
+                <p>no cam</p>
+              </div>
+            )}
+          </>
+        )}
+        {audio && (
+          <AudioTrack
+            onMuteChange={m => onMuteChange(m, audio)}
+            track={audio}
+          />
         )}
 
         <div className="item-footer">
