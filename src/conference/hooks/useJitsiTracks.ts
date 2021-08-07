@@ -12,6 +12,7 @@ import { useJitsiUsers } from './useJitsiUsers';
 interface UserTrack {
   userId: string;
   username: string;
+  role: string;
   tracks: {
     audio?: JitsiTrack;
     video?: JitsiTrack;
@@ -20,7 +21,7 @@ interface UserTrack {
 
 export const useJitsiTracks = (username: string) => {
   const tracks = useJitsiTracksState();
-  const { myUserId } = useJitsiConference();
+  const { myUserId, role } = useJitsiConference();
   const { userIds, users } = useJitsiUsers();
 
   const [tracksState, setTracksState] =
@@ -48,6 +49,7 @@ export const useJitsiTracks = (username: string) => {
       {
         userId: userId,
         username: users[userId].getDisplayName(),
+        role: users[userId].getRole(),
         tracks: reduceTracks(users[userId].getTracks())
       }
     ],
@@ -55,6 +57,7 @@ export const useJitsiTracks = (username: string) => {
       {
         userId: myUserId,
         username,
+        role: role,
         tracks: reduceTracks(tracksState.localTracks)
       }
     ]

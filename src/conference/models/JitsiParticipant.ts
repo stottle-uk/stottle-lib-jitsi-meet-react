@@ -5,4 +5,6 @@ export interface JitsiParticipant {
   getId(): string;
   getTracks(): JitsiTrack[];
   getConnectionStatus(): string;
+  getRole(): string;
+  getStatus(): string;
 }
