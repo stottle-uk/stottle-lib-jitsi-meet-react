@@ -8,8 +8,8 @@ import Speaking from './Speaking';
 interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
   userId: string;
   username?: string;
-  video?: JitsiTrack;
-  audio?: JitsiTrack;
+  video: JitsiTrack;
+  audio: JitsiTrack;
   displayUserActions: boolean;
   userAction: (userId: string, type: string) => void;
 }
@@ -23,49 +23,40 @@ const GridItem: React.FC<OwnProps> = ({
   userAction,
   ...props
 }) => {
-  const [isAudioMuted, setAudioMuted] = useState(false);
-  const [isVideoMuted, setVideoMuted] = useState(false);
+  const [isMuted, setMuted] = useState({
+    audio: audio.isMuted(),
+    video: video.isMuted()
+  });
 
   useEffect(() => {
-    video && setVideoMuted(video.isMuted());
-    audio && setAudioMuted(audio.isMuted());
+    setMuted({
+      video: video.isMuted(),
+      audio: audio.isMuted()
+    });
   }, [video, audio]);
 
-  const onMuteChange = (isMuted: boolean, track: JitsiTrack) => {
-    track.getType() === 'video' && setVideoMuted(isMuted);
-    track.getType() === 'audio' && setAudioMuted(isMuted);
-  };
+  const onMuteChange = (track: JitsiTrack) =>
+    setMuted(state => ({ ...state, [track.getType()]: track.isMuted() }));
 
   return (
     <div {...props}>
       <div className="item">
-        {video && (
-          <>
-            <div className={`item-track-video ${isVideoMuted && 'hidden'}`}>
-              <VideoTrack
-                onMuteChange={m => onMuteChange(m, video)}
-                track={video}
-              />
-            </div>
-            {isVideoMuted && (
-              <div className="item-track-video">
-                <p>no cam</p>
-              </div>
-            )}
-          </>
+        <div className={`item-track-video ${isMuted.video && 'hidden'}`}>
+          <VideoTrack onMuteChange={onMuteChange} track={video} />
+        </div>
+        {isMuted.video && (
+          <div className="item-track-video">
+            <p>{username}</p>
+          </div>
         )}
-        {audio && (
-          <AudioTrack
-            onMuteChange={m => onMuteChange(m, audio)}
-            track={audio}
-          />
-        )}
+
+        <AudioTrack onMuteChange={onMuteChange} track={audio} />
 
         <div className="item-footer">
           <div>
             <p>
               {username} <Speaking userId={userId} />
-              {isAudioMuted && (
+              {isMuted.audio && (
                 <FontAwesomeIcon icon={'microphone-slash'} color="red" />
               )}
             </p>

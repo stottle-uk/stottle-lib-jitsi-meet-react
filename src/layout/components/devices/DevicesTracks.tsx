@@ -15,6 +15,9 @@ const DevicesTracks: React.FC<OwnProps> = ({ audio, video }) => {
     video: video.isMuted()
   });
 
+  const onMuteChange = (track: JitsiTrack) =>
+    setMuted(state => ({ ...state, [track.getType()]: track.isMuted() }));
+
   const toggleMute = async (t: JitsiTrack) =>
     t.isMuted() ? await t.unmute() : await t.mute();
 
@@ -22,12 +25,12 @@ const DevicesTracks: React.FC<OwnProps> = ({ audio, video }) => {
     <>
       <div className="video-containor">
         <AudioTrack
-          onMuteChange={isMuted => setMuted(m => ({ ...m, audio: isMuted }))}
+          onMuteChange={onMuteChange}
           track={audio}
           dispose={false}
         ></AudioTrack>
         <VideoTrack
-          onMuteChange={isMuted => setMuted(m => ({ ...m, video: isMuted }))}
+          onMuteChange={onMuteChange}
           track={video}
           dispose={false}
         ></VideoTrack>

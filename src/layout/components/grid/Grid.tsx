@@ -59,18 +59,22 @@ const Grid: React.FC = () => {
           gridTemplateRows: getRows(participantsLength)
         }}
       >
-        {allTracks.map(user => (
-          <GridItem
-            key={user.userId}
-            className="grid-item"
-            userId={user.userId}
-            displayUserActions={false}
-            userAction={userAction}
-            username={user.username}
-            audio={user.tracks.audio}
-            video={user.tracks.video}
-          />
-        ))}
+        {allTracks.map(
+          user =>
+            user.tracks.audio &&
+            user.tracks.video && (
+              <GridItem
+                key={user.userId}
+                className="grid-item"
+                userId={user.userId}
+                displayUserActions={false}
+                userAction={userAction}
+                username={user.username}
+                audio={user.tracks.audio}
+                video={user.tracks.video}
+              />
+            )
+        )}
       </div>
     </>
   );

@@ -6,7 +6,7 @@ import { JitsiTrack } from '../../../conference/models/JitsiTrack';
 interface OwnProps {
   track: JitsiTrack;
   dispose?: boolean;
-  onMuteChange: (muted: boolean) => void;
+  onMuteChange: (muted: JitsiTrack) => void;
 }
 
 const AudioTrack: React.FC<OwnProps> = ({ track, dispose, onMuteChange }) => {
@@ -27,8 +27,8 @@ const AudioTrack: React.FC<OwnProps> = ({ track, dispose, onMuteChange }) => {
   }, [audioEl, track, dispose]);
 
   useEffect(() => {
-    const sub = fromEvent<JitsiTrack>(track, TRACK_MUTE_CHANGED).subscribe(
-      track => onMuteChange(track.isMuted())
+    const sub = fromEvent<JitsiTrack>(track, TRACK_MUTE_CHANGED).subscribe(t =>
+      onMuteChange(t)
     );
 
     return () => {
