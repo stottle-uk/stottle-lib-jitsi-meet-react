@@ -40,27 +40,25 @@ const GridItem: React.FC<OwnProps> = ({
 
   return (
     <div {...props}>
-      <div className="item">
-        <div className={`item-track-video ${isMuted.video && 'hidden'}`}>
-          <VideoTrack onMuteChange={onMuteChange} track={video} />
+      <div className={`grid-video ${isMuted.video && 'hidden'}`}>
+        <VideoTrack onMuteChange={onMuteChange} track={video} />
+      </div>
+      {isMuted.video && (
+        <div className="grid-video">
+          <p>{username}</p>
         </div>
-        {isMuted.video && (
-          <div className="item-track-video">
-            <p>{username}</p>
-          </div>
-        )}
+      )}
 
-        <AudioTrack onMuteChange={onMuteChange} track={audio} />
+      <AudioTrack onMuteChange={onMuteChange} track={audio} />
 
-        <div className="item-footer">
-          <div>
-            <p>
-              {username} <Speaking userId={userId} />
-              {isMuted.audio && (
-                <FontAwesomeIcon icon={'microphone-slash'} color="red" />
-              )}
-            </p>
-          </div>
+      <div className="grid-footer">
+        <div>
+          <p>
+            {username} <Speaking userId={userId} />
+            {isMuted.audio && (
+              <FontAwesomeIcon icon={'microphone-slash'} color="red" />
+            )}
+          </p>
         </div>
       </div>
 
