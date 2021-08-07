@@ -2,7 +2,7 @@
   position: fixed;
   width: 100%;
   bottom: 0;
-  height: 132px;
+  height: 164px;
   z-index: 5;
   opacity: 1;
   display: flex;
@@ -18,9 +18,10 @@
 
 .toolbar {
   display: flex;
-  background-color: #333;
+  background-color: rgba($color: #333, $alpha: 0.6);
   height: 68px;
-  padding: 0;
+  padding: 0 20px;
+  border-radius: 34px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -32,8 +33,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-right: 1px solid #000;
-    border-left: 1px solid #000;
 
     button {
       display: flex;
@@ -44,6 +43,20 @@
       outline: none;
       cursor: pointer;
       width: 100%;
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+    }
+
+    &:first-child {
+      button {
+        border-left: none;
+      }
+    }
+
+    &:last-child {
+      button {
+        border-right: none;
+      }
     }
 
     span {
