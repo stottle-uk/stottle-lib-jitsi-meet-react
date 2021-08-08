@@ -2,11 +2,7 @@ import React from 'react';
 import Grid from '../grid/Grid';
 import Toolbar from '../toolbar/Toolbar';
 
-interface OwnProps {
-  leaveConference: () => void;
-}
-
-const ConferenceLayout: React.FC<OwnProps> = ({ leaveConference }) => {
+const ConferenceLayout: React.FC = () => {
   return (
     <div className="container">
       <Grid />
