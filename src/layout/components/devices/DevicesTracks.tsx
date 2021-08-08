@@ -41,6 +41,7 @@ const DevicesTracks: React.FC<OwnProps> = ({ audio, video }) => {
             title={isMuted.audio ? 'Mic off' : 'Mic on'}
             logo={isMuted.audio ? 'microphone-slash' : 'microphone'}
             onClick={() => toggleMute(audio)}
+            color="black"
           />
         </div>
         <div className="btn">
@@ -48,6 +49,7 @@ const DevicesTracks: React.FC<OwnProps> = ({ audio, video }) => {
             title={isMuted.video ? 'Cam off' : 'Cam on'}
             logo={isMuted.video ? 'video-slash' : 'video'}
             onClick={() => toggleMute(video)}
+            color="black"
           />
         </div>
       </div>

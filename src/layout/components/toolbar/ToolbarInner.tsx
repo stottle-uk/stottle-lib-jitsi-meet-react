@@ -56,7 +56,7 @@ const ToolbarInner: React.FC<OwnProps> = ({
 
   return (
     <div className="toolbar-container">
-      <div className="toolbar">
+      <div className="toolbar hover">
         <div className="btn">
           <CallButton
             title={isMuted.audio ? 'Mic off' : 'Mic on'}
