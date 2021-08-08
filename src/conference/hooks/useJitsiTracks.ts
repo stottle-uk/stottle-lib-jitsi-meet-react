@@ -66,6 +66,6 @@ export const useJitsiTracks = (username: string) => {
   return {
     localTracks: reduceTracks(tracksState.localTracks),
     allTracks,
-    participantsLength: userIds.length
+    participantsLength: Object.keys(allTracks).length
   };
 };
