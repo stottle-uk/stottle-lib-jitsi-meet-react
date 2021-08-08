@@ -1,5 +1,6 @@
 import React from 'react';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
+import GridControls from './GridControls';
 import GridFooter from './GridFooter';
 import GridItem from './GridItem';
 
@@ -55,14 +56,21 @@ const Grid: React.FC = () => {
                 audio={user.tracks.audio}
                 video={user.tracks.video}
               >
-                <GridFooter
-                  className="grid-footer"
-                  username={user.username}
-                  audio={user.tracks.audio}
-                  video={user.tracks.video}
-                  userId={user.userId}
-                  displayUserActions={true}
-                />
+                <>
+                  <GridFooter
+                    className="grid-footer"
+                    username={user.username}
+                    audio={user.tracks.audio}
+                    video={user.tracks.video}
+                    userId={user.userId}
+                  />
+                  {!user.isLocal && (
+                    <GridControls
+                      className="grid-controls"
+                      userId={user.userId}
+                    />
+                  )}
+                </>
               </GridItem>
             )
         )}

@@ -13,6 +13,7 @@ export interface UserTrack {
   userId: string;
   username: string;
   role: string;
+  isLocal: boolean;
   tracks: {
     audio?: JitsiTrack;
     video?: JitsiTrack;
@@ -50,6 +51,7 @@ export const useJitsiTracks = (username: string) => {
         userId: userId,
         username: users[userId].getDisplayName(),
         role: users[userId].getRole(),
+        isLocal: false,
         tracks: reduceTracks(users[userId].getTracks())
       }
     ],
@@ -58,6 +60,7 @@ export const useJitsiTracks = (username: string) => {
         userId: myUserId,
         username,
         role: role,
+        isLocal: true,
         tracks: reduceTracks(tracksState.localTracks)
       }
     ]
