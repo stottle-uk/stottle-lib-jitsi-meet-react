@@ -1,6 +1,6 @@
 import React from 'react';
-import { useJitsiActions } from '../../../conference/hooks/useJitsiActions';
 import { useJitsiTracks } from '../../../conference/hooks/useJitsiTracks';
+import GridFooter from './GridFooter';
 import GridItem from './GridItem';
 
 const getCols = (len: number): string => {
@@ -33,22 +33,7 @@ const getRows = (len: number): string => {
 };
 
 const Grid: React.FC = () => {
-  const { kickParticipant, muteParticipant } = useJitsiActions();
-  const { allTracks } = useJitsiTracks('ME!');
-
-  const userAction = (userId: string, action: string) => {
-    if (action === 'kick') {
-      kickParticipant(userId);
-    }
-    if (action === 'muteVideo') {
-      muteParticipant(userId, 'video');
-    }
-    if (action === 'muteAudio') {
-      muteParticipant(userId, 'audio');
-    }
-  };
-
-  const participantsLength = Object.keys(allTracks).length;
+  const { allTracks, participantsLength } = useJitsiTracks('ME!');
 
   return (
     <>
@@ -66,13 +51,19 @@ const Grid: React.FC = () => {
               <GridItem
                 key={user.userId}
                 className="grid-item"
-                userId={user.userId}
-                displayUserActions={false}
-                userAction={userAction}
                 username={user.username}
                 audio={user.tracks.audio}
                 video={user.tracks.video}
-              />
+              >
+                <GridFooter
+                  className="grid-footer"
+                  username={user.username}
+                  audio={user.tracks.audio}
+                  video={user.tracks.video}
+                  userId={user.userId}
+                  displayUserActions={true}
+                />
+              </GridItem>
             )
         )}
       </div>

@@ -9,7 +9,7 @@ import { useJitsiConference } from './useJitsiConference';
 import { useJitsiTracksState } from './useJitsiMeet';
 import { useJitsiUsers } from './useJitsiUsers';
 
-interface UserTrack {
+export interface UserTrack {
   userId: string;
   username: string;
   role: string;
@@ -65,6 +65,7 @@ export const useJitsiTracks = (username: string) => {
 
   return {
     localTracks: reduceTracks(tracksState.localTracks),
-    allTracks
+    allTracks,
+    participantsLength: userIds.length
   };
 };
