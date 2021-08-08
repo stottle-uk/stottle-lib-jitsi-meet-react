@@ -1,30 +1,26 @@
 .toolbar-container {
   position: fixed;
-  width: 100%;
-  bottom: 0;
-  height: 164px;
+  bottom: 102px;
   z-index: 5;
   opacity: 1;
   display: flex;
   flex-flow: column;
   align-items: center;
   justify-content: space-between;
-
-  &.hidden {
-    bottom: -100px;
-    transition: 0.5s;
-  }
 }
 
 .toolbar {
   display: flex;
-  background-color: rgba($color: #333, $alpha: 0.6);
   height: 68px;
   padding: 0 20px;
   border-radius: 34px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  &:hover {
+    background-color: rgba($color: #333, $alpha: 0.6);
+  }
 
   .btn {
     position: relative;
