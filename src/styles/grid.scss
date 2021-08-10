@@ -44,16 +44,50 @@
 
     .grid-controls {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 20px;
+      right: 20px;
+    }
+  }
+}
+
+.grid-controls {
+  .menu-btn {
+    font-size: 18px;
+    height: 20px;
+    width: 20px;
+    padding: 4px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: block;
+
+    & + div {
+      margin-top: -20px;
+      background-color: #eee;
+      visibility: hidden;
+      opacity: 0;
+      display: none;
+      z-index: 999;
 
       button {
+        width: 50px;
         font-size: 18px;
         padding: 4px;
         border: none;
-        background: #333;
+        background: none;
         cursor: pointer;
+        display: block;
+        background: red;
       }
+    }
+
+    &:hover + div,
+    &:focus-within + div,
+    & + div:hover,
+    & + div:focus-within {
+      visibility: visible;
+      opacity: 1;
+      display: block;
     }
   }
 }

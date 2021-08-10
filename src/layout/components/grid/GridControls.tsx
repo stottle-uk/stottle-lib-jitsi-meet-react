@@ -10,13 +10,12 @@ const GridControls: React.FC<OwnProps> = ({ userId, ...props }) => {
 
   return (
     <div {...props}>
-      <button onClick={() => kickParticipant(userId)}>Kick</button>
-      <button onClick={() => muteParticipant(userId, 'video')}>
-        muteVideo
-      </button>
-      <button onClick={() => muteParticipant(userId, 'audio')}>
-        muteAudio
-      </button>
+      <button className="menu-btn">...</button>
+      <div>
+        <button onClick={() => kickParticipant(userId)}>K</button>
+        <button onClick={() => muteParticipant(userId, 'video')}>V</button>
+        <button onClick={() => muteParticipant(userId, 'audio')}>A</button>
+      </div>
     </div>
   );
 };

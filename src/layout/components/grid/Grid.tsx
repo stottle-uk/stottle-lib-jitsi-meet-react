@@ -56,21 +56,19 @@ const Grid: React.FC = () => {
                 audio={user.tracks.audio}
                 video={user.tracks.video}
               >
-                <>
-                  <GridFooter
-                    className="grid-footer"
-                    username={user.username}
-                    audio={user.tracks.audio}
-                    video={user.tracks.video}
+                <GridFooter
+                  className="grid-footer"
+                  username={user.username}
+                  audio={user.tracks.audio}
+                  video={user.tracks.video}
+                  userId={user.userId}
+                />
+                {!user.isLocal && (
+                  <GridControls
+                    className="grid-controls"
                     userId={user.userId}
                   />
-                  {!user.isLocal && (
-                    <GridControls
-                      className="grid-controls"
-                      userId={user.userId}
-                    />
-                  )}
-                </>
+                )}
               </GridItem>
             )
         )}
