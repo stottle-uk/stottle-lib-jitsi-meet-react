@@ -1,5 +1,6 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
+  faBars,
   faCheckSquare,
   faCog,
   faDesktop,
@@ -27,7 +28,8 @@ library.add(
   faVolumeMute,
   faDesktop,
   faCog,
-  faUser
+  faUser,
+  faBars
 );
 
 ReactDOM.render(

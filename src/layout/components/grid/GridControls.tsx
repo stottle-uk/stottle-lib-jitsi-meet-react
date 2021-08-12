@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useJitsiActions } from '../../../conference/hooks/useJitsiActions';
 
@@ -10,11 +11,15 @@ const GridControls: React.FC<OwnProps> = ({ userId, ...props }) => {
 
   return (
     <div {...props}>
-      <button className="menu-btn">...</button>
+      <button className="menu-btn">
+        <FontAwesomeIcon icon="bars" color="white" />
+      </button>
       <div>
-        <button onClick={() => kickParticipant(userId)}>K</button>
-        <button onClick={() => muteParticipant(userId, 'video')}>V</button>
-        <button onClick={() => muteParticipant(userId, 'audio')}>A</button>
+        {/* <button onClick={() => muteParticipant(userId, 'video')}>V</button> */}
+        <button onClick={() => muteParticipant(userId, 'audio')}>
+          Mute Audio
+        </button>
+        <button onClick={() => kickParticipant(userId)}>Kick User</button>
       </div>
     </div>
   );
