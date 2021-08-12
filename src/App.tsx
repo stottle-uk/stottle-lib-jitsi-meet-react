@@ -9,7 +9,7 @@ const connectionOptions = {
     domain: JITSI_SERVICE_URL,
     muc: 'conference.meet.jit.si'
   },
-  serviceUrl: `https://meet.jit.si/http-bind`,
+  serviceUrl: `https://${JITSI_SERVICE_URL}/http-bind`,
   clientNode: 'http://jitsi.org/jitsimeet'
 };
 
