@@ -43,7 +43,6 @@ export class JitsiPasswordStateService {
     switch (event.type) {
       case JitsiConferenceEventTypes.ConferenceFailed:
         if (event.payload === 'conference.passwordRequired') {
-          console.log(event.payload);
           this.stateInner$.next(new SetPasswordRequired(true));
         }
         break;
