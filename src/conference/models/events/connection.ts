@@ -7,7 +7,7 @@ export enum JitsiConnectionEventTypes {
 
 export class ConnectionEstablished implements Action {
   readonly type = JitsiConnectionEventTypes.ConnectionEstablished;
-  constructor(public payload: string) {}
+  constructor(public payload = null) {}
 }
 
 export class ConnectionDisconnected implements Action {

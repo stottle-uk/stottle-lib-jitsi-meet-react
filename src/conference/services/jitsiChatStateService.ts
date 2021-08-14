@@ -28,12 +28,14 @@ export class JitsiChatStateService {
   }
 
   send(message: JitsiChatMessage) {
-    this.jitsiService.sendCommandOnce(this.CHAT_COMMAND_TYPE, {
-      value: message.message,
-      attributes: {
-        authorId: message.authorId,
-        authorName: message.authorName
-      }
-    });
+    this.jitsiService
+      .sendCommandOnce(this.CHAT_COMMAND_TYPE, {
+        value: message.message,
+        attributes: {
+          authorId: message.authorId,
+          authorName: message.authorName
+        }
+      })
+      .subscribe();
   }
 }

@@ -20,6 +20,7 @@ import {
 } from 'rxjs/operators';
 import { Action } from '../models/events/action';
 import {
+  ConferenceJoined,
   JitsiConferenceEvents,
   JitsiConferenceEventTypes
 } from '../models/events/conference';
@@ -57,7 +58,10 @@ export class JitsiMeetService {
   private connInner$ = new ReplaySubject<JitsiConnection>(1);
   private confInner$ = new ReplaySubject<JitsiConference>(1);
 
-  constructor(private jitsiMeet: JitsiMeetJS) {}
+  constructor(private jitsiMeet: JitsiMeetJS) {
+    // jitsiMeet.setLogLevel(jitsiMeet.logLevels.ERROR);
+    // jitsiMeet.init();
+  }
 
   connectionEvents$ = this.connInner$.pipe(
     mergeMap(conn =>
@@ -199,22 +203,25 @@ export class JitsiMeetService {
     );
   }
 
-  kickParticipant(userId: string) {
-    this.confInner$.pipe(take(1)).subscribe(conf => {
-      conf.kickParticipant(userId, 'userKicked');
-    });
+  kickParticipant(userId: string, reason = 'userKicked') {
+    return this.confInner$.pipe(
+      take(1),
+      tap(conf => conf.kickParticipant(userId, reason))
+    );
   }
 
   muteParticipant(userId: string, mediaType: TrackType) {
-    this.confInner$.pipe(take(1)).subscribe(conf => {
-      conf.muteParticipant(userId, mediaType);
-    });
+    return this.confInner$.pipe(
+      take(1),
+      tap(conf => conf.muteParticipant(userId, mediaType))
+    );
   }
 
-  sendCommandOnce(name: string, values: any) {
-    this.confInner$
-      .pipe(take(1))
-      .subscribe(conf => conf.sendCommandOnce(name, values));
+  sendCommandOnce(name: string, values: unknown) {
+    return this.confInner$.pipe(
+      take(1),
+      tap(conf => conf.sendCommandOnce(name, values))
+    );
   }
 
   addCommandListener(commandType: string) {
@@ -237,15 +244,12 @@ export class JitsiMeetService {
     e: JitsiConferenceEvents
   ): JitsiConferenceEvents {
     return e.type === JitsiConferenceEventTypes.Joined
-      ? {
-          ...e,
-          payload: {
-            role: conf.getRole(),
-            myUserId: conf.myUserId(),
-            isHidden: conf.isHidden(),
-            roomname: conf.getName()
-          }
-        }
+      ? new ConferenceJoined({
+          role: conf.getRole(),
+          myUserId: conf.myUserId(),
+          isHidden: conf.isHidden(),
+          roomname: conf.getName()
+        })
       : e;
   }
 

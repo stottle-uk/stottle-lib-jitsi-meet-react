@@ -5,9 +5,9 @@ export const useJitsiActions = () => {
   const jitsi = useJitsiMeet();
 
   return {
-    kickParticipant: (userId: string) => jitsi.kickParticipant(userId),
+    kickParticipant: (userId: string) =>
+      jitsi.kickParticipant(userId).subscribe(),
     muteParticipant: (userId: string, mediaType: TrackType) =>
-      jitsi.muteParticipant(userId, mediaType),
-    lockRoom: (password: string) => jitsi.lockRoom(password)
+      jitsi.muteParticipant(userId, mediaType).subscribe()
   };
 };

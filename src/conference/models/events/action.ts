@@ -6,13 +6,15 @@ export interface Action<T = unknown> {
   payload: T;
 }
 
-export const typeOf = <T extends Action>(
-  ...events: string[]
-): OperatorFunction<T, T> => source =>
-  source.pipe(filter(e => events.includes(e.type)));
+export const typeOf =
+  <T extends Action>(...events: string[]): OperatorFunction<T, T> =>
+  source =>
+    source.pipe(filter(e => events.includes(e.type)));
 
-export const scanState = <TState, TActions extends Action>(
-  accumulator: (state: TState, action: TActions) => TState,
-  seed: TState
-): OperatorFunction<TActions, TState> => (source): Observable<TState> =>
-  source.pipe(scan(accumulator, seed), startWith(seed), shareReplay(1));
+export const scanState =
+  <TState, TActions extends Action>(
+    accumulator: (state: TState, action: TActions) => TState,
+    seed: TState
+  ): OperatorFunction<TActions, TState> =>
+  (source): Observable<TState> =>
+    source.pipe(scan(accumulator, seed), startWith(seed), shareReplay(1));
