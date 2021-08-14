@@ -58,10 +58,7 @@ export class JitsiMeetService {
   private connInner$ = new ReplaySubject<JitsiConnection>(1);
   private confInner$ = new ReplaySubject<JitsiConference>(1);
 
-  constructor(private jitsiMeet: JitsiMeetJS) {
-    // jitsiMeet.setLogLevel(jitsiMeet.logLevels.ERROR);
-    // jitsiMeet.init();
-  }
+  constructor(private jitsiMeet: JitsiMeetJS) {}
 
   connectionEvents$ = this.connInner$.pipe(
     mergeMap(conn =>
@@ -170,7 +167,7 @@ export class JitsiMeetService {
           catchError(err =>
             err.name === 'gum.screensharing_user_canceled'
               ? of(oldTrack)
-              : throwError(() => new Error(err))
+              : throwError(() => new Error(err.name))
           )
         )
       )
