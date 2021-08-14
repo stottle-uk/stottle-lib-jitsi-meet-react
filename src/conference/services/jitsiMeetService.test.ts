@@ -42,13 +42,13 @@ const ConferenceMock = {
   kickParticipant: (userId: string, reason: string) => void 0,
   muteParticipant: (userId: string, mediaType: TrackType) => void 0,
   sendCommandOnce: (name: string, values: TrackType) => void 0,
-  addCommandListener: (commandType: string, fn: Function) => fn('values'),
+  addCommandListener(commandType: string, fn: Function) {},
   addEventListener(type: string, listener: Function) {},
   removeEventListener: () => void 0,
-  getRole: () => 'userRole',
-  myUserId: () => 'myUserId1',
-  isHidden: () => false,
-  getName: () => 'roomNameTest'
+  getRole: () => userMock.role,
+  myUserId: () => userMock.myUserId,
+  isHidden: () => userMock.isHidden,
+  getName: () => userMock.roomname
 };
 
 class ConnectionMock {
@@ -69,7 +69,6 @@ const mediaDevicesMock = {
 
 const JitsiMeetJSMock = {
   JitsiConnection: ConnectionMock,
-  setLogLevel: (level: string) => void 0,
   events: {
     connection: {
       CONNECTION_ESTABLISHED: JitsiConnectionEventTypes.ConnectionEstablished
@@ -82,7 +81,7 @@ const JitsiMeetJSMock = {
       DEVICE_CHANGE: 'mediaDevices.devicechange'
     }
   },
-  errors: { connection: {} },
+  errors: {},
   createLocalTracks: () => Promise.resolve([trackMock, trackMock]),
   mediaDevices: mediaDevicesMock
 } as unknown as JitsiMeetJS;
@@ -128,18 +127,18 @@ describe('JitsiMeetService', () => {
     expect(ConnectionMock.prototype.connect).toHaveBeenCalled();
   });
 
-  test('disconnect()', done => {
-    service.disconnect().subscribe(() => {
-      expect(ConnectionMock.prototype.disconnect).toHaveBeenCalled();
-      done();
-    });
-  });
-
   test('initJitsiConference()', () => {
     expect(ConnectionMock.prototype.initJitsiConference).toHaveBeenCalledWith(
       'roomname',
       { enableLayerSuspension: true }
     );
+  });
+
+  test('disconnect()', done => {
+    service.disconnect().subscribe(() => {
+      expect(ConnectionMock.prototype.disconnect).toHaveBeenCalled();
+      done();
+    });
   });
 
   test('joinConference()', done => {
@@ -326,7 +325,7 @@ describe('JitsiMeetService', () => {
     eventHandlers[JitsiConnectionEventTypes.ConnectionEstablished](
       connectionEstablishedEvt.payload
     );
-    eventHandlers[JitsiConferenceEventTypes.Joined](conJoinedEvt.payload);
+    eventHandlers[JitsiConferenceEventTypes.Joined]();
     eventHandlers[JitsiConferenceEventTypes.Left](conferenceLeftEvt.payload);
 
     service.dispose();
