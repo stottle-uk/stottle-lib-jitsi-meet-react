@@ -1,52 +1,18 @@
-import { first, merge, toArray } from 'rxjs';
-import { ConferenceJoined } from '../models/events/conference';
-import { ConnectionEstablished } from '../models/events/connection';
+import { merge, take, toArray } from 'rxjs';
+import {
+  ConferenceJoined,
+  ConferenceLeft,
+  JitsiConferenceEventTypes
+} from '../models/events/conference';
+import {
+  ConnectionEstablished,
+  JitsiConnectionEventTypes
+} from '../models/events/connection';
+import { JitsiDevicesEventTypes } from '../models/events/mediaDevices';
 import { JitsiMeetJS } from '../models/JitsiMeetJS';
 import { JitsiTrack } from '../models/JitsiTrack';
 import { TrackType } from '../models/utils';
 import { JitsiMeetService } from './jitsiMeetService';
-
-const ConferenceMock = {
-  setDisplayName: (username: string) => void 0,
-  join: (password: string) => void 0,
-  leave: () => void 0,
-  addTrack: (track: JitsiTrack) => void 0,
-  replaceTrack: (oldT: JitsiTrack, newT: JitsiTrack) => void 0,
-  lock: (password: string) => Promise.resolve(void 0),
-  kickParticipant: (userId: string, reason: string) => void 0,
-  muteParticipant: (userId: string, mediaType: TrackType) => void 0,
-  sendCommandOnce: (name: string, values: TrackType) => void 0,
-  addCommandListener: (commandType: string, fn: Function) => fn('values'),
-  addEventListener: (type: string, listener: (evt: unknown) => void) =>
-    listener(
-      new ConferenceJoined({
-        isHidden: true,
-        myUserId: '',
-        role: '',
-        roomname: ''
-      }).payload
-    ),
-  removeEventListener: () => void 0,
-  getRole: () => 'userRole',
-  myUserId: () => 'myUserId1',
-  isHidden: () => false,
-  getName: () => 'roomNameTest'
-};
-
-class ConnectionMock {
-  connect() {}
-  disconnect() {}
-
-  initJitsiConference(r: string, o: any) {
-    return ConferenceMock;
-  }
-
-  addEventListener(type: string, listener: (evt: unknown) => void): void {
-    listener(new ConnectionEstablished().payload);
-  }
-
-  removeEventListener() {}
-}
 
 const trackMock = {
   type: 'audio'
@@ -59,11 +25,46 @@ const deviceMock = {
   label: 'deviceLabel'
 } as MediaDeviceInfo;
 
-const mediaDevicesMock = {
-  addEventListener: (type: string, listener: (evt: unknown) => void) =>
-    listener(deviceMock),
+const userMock = {
+  isHidden: false,
+  myUserId: 'myUserId1',
+  role: 'userRole',
+  roomname: 'roomNameTest'
+};
+
+const ConferenceMock = {
+  setDisplayName: (username: string) => void 0,
+  join: (password: string) => void 0,
+  leave: () => void 0,
+  addTrack: (track: JitsiTrack) => void 0,
+  replaceTrack: (oldT: JitsiTrack, newT: JitsiTrack) => void 0,
+  lock: (password: string) => Promise.resolve(void 0),
+  kickParticipant: (userId: string, reason: string) => void 0,
+  muteParticipant: (userId: string, mediaType: TrackType) => void 0,
+  sendCommandOnce: (name: string, values: TrackType) => void 0,
+  addCommandListener: (commandType: string, fn: Function) => fn('values'),
+  addEventListener(type: string, listener: Function) {},
   removeEventListener: () => void 0,
-  enumerateDevices: (fn: Function) => fn([deviceMock, deviceMock])
+  getRole: () => 'userRole',
+  myUserId: () => 'myUserId1',
+  isHidden: () => false,
+  getName: () => 'roomNameTest'
+};
+
+class ConnectionMock {
+  connect() {}
+  disconnect() {}
+  initJitsiConference(r: string, o: any) {
+    return ConferenceMock;
+  }
+  addEventListener(type: string, listener: Function): void {}
+  removeEventListener(): void {}
+}
+
+const mediaDevicesMock = {
+  enumerateDevices: (fn: Function) => fn([deviceMock, deviceMock]),
+  addEventListener(type: string, listener: Function) {},
+  removeEventListener: () => void 0
 };
 
 const JitsiMeetJSMock = {
@@ -71,10 +72,11 @@ const JitsiMeetJSMock = {
   setLogLevel: (level: string) => void 0,
   events: {
     connection: {
-      CONNECTION_ESTABLISHED: 'connection.connectionEstablished'
+      CONNECTION_ESTABLISHED: JitsiConnectionEventTypes.ConnectionEstablished
     },
     conference: {
-      JOINED: 'conference.joined'
+      JOINED: JitsiConferenceEventTypes.Joined,
+      LEFT: JitsiConferenceEventTypes.Left
     },
     mediaDevices: {
       DEVICE_CHANGE: 'mediaDevices.devicechange'
@@ -87,7 +89,6 @@ const JitsiMeetJSMock = {
 
 describe('JitsiMeetService', () => {
   let service: JitsiMeetService;
-  let events: Record<string, Function> = {};
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -106,10 +107,6 @@ describe('JitsiMeetService', () => {
     jest.spyOn(ConferenceMock, 'sendCommandOnce');
     jest.spyOn(ConferenceMock, 'addCommandListener');
     jest.spyOn(JitsiMeetJSMock, 'createLocalTracks');
-
-    // ConferenceMock.addEventListener = jest.fn((event, callback) => {
-    //   events[event] = callback;
-    // });
 
     service = new JitsiMeetService(JitsiMeetJSMock);
   });
@@ -270,20 +267,42 @@ describe('JitsiMeetService', () => {
   });
 
   test('addCommandListener()', done => {
+    const commandHandlers: Record<string, Function> = {};
     ConferenceMock.addCommandListener = jest.fn(
-      (commandType: string, fn: Function) => fn('commandValue')
+      (command: string, callback: Function) =>
+        (commandHandlers[command] = callback)
     );
 
+    const commandType = 'commandName';
     service
-      .addCommandListener('commandType')
-      .pipe(first())
+      .addCommandListener(commandType)
+      .pipe(take(2), toArray())
       .subscribe(res => {
-        expect(res).toEqual('commandValue');
+        expect(res).toEqual(['commandValue1', 'commandValue2']);
         done();
       });
+
+    commandHandlers[commandType]('commandValue1');
+    commandHandlers[commandType]('commandValue2');
   });
 
   test('events()', done => {
+    const eventHandlers: Record<string, Function> = {};
+    const handler = jest.fn(
+      (event, callback) => (eventHandlers[event] = callback)
+    );
+    ConnectionMock.prototype.addEventListener = handler;
+    ConferenceMock.addEventListener = handler;
+    mediaDevicesMock.addEventListener = handler;
+
+    const conJoinedEvt = new ConferenceJoined(userMock);
+    const deviceListChangedEvt = {
+      type: 'mediaDevices.devicechange',
+      payload: deviceMock
+    };
+    const conferenceLeftEvt = new ConferenceLeft();
+    const connectionEstablishedEvt = new ConnectionEstablished();
+
     merge(
       service.connectionEvents$,
       service.conferenceEvents$,
@@ -292,20 +311,24 @@ describe('JitsiMeetService', () => {
       .pipe(toArray())
       .subscribe(events => {
         expect(events).toEqual([
-          new ConnectionEstablished(),
-          new ConferenceJoined({
-            isHidden: false,
-            myUserId: 'myUserId1',
-            role: 'userRole',
-            roomname: 'roomNameTest'
-          }),
-          {
-            type: 'mediaDevices.devicechange',
-            payload: deviceMock
-          }
+          deviceListChangedEvt,
+          connectionEstablishedEvt,
+          conJoinedEvt,
+          conferenceLeftEvt
         ]);
+
         done();
       });
+
+    eventHandlers[JitsiDevicesEventTypes.deviceListChanged](
+      deviceListChangedEvt.payload
+    );
+    eventHandlers[JitsiConnectionEventTypes.ConnectionEstablished](
+      connectionEstablishedEvt.payload
+    );
+    eventHandlers[JitsiConferenceEventTypes.Joined](conJoinedEvt.payload);
+    eventHandlers[JitsiConferenceEventTypes.Left](conferenceLeftEvt.payload);
+
     service.dispose();
   });
 
