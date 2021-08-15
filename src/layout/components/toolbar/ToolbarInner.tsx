@@ -23,7 +23,6 @@ const ToolbarInner: React.FC<OwnProps> = ({
   showSettings
 }) => {
   const { replaceDevice } = useJitsiDevices();
-
   const isMuted = useMutedSate(audio, video);
 
   const toggleMute = async (t: JitsiTrack) =>

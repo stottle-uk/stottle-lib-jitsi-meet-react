@@ -27,6 +27,7 @@ const GridFooter: React.FC<OwnProps> = ({
         {isMuted.audio && (
           <FontAwesomeIcon icon={'microphone-slash'} color="red" />
         )}
+        {isMuted.video && <FontAwesomeIcon icon={'video-slash'} color="red" />}
       </p>
     </div>
   );
