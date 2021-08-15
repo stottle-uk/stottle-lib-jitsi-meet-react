@@ -30,7 +30,13 @@ const VideoTrack: React.FC<OwnProps> = ({ track, dispose, onMuteChange }) => {
     };
   }, [track, onMuteChange]);
 
-  return <video autoPlay={true} ref={videoEl} />;
+  return (
+    <video
+      autoPlay={true}
+      ref={videoEl}
+      className={track.isLocal() ? 'local' : 'remote'}
+    />
+  );
 };
 
 export default memo(VideoTrack);

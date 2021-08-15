@@ -39,6 +39,10 @@ video {
   border: none;
   display: block;
   object-fit: cover;
+
+  &.local {
+    transform: rotateY(180deg);
+  }
 }
 
 audio {
