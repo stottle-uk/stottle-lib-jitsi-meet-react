@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef } from 'react';
+import React, { FormEvent } from 'react';
 import { useJitsiPassword } from '../../../conference/hooks/useJitsiPassword';
 
 interface OwnProps {
@@ -6,28 +6,34 @@ interface OwnProps {
 }
 
 const LobbyForm: React.FC<OwnProps> = ({ joinConference }) => {
-  const usernameEl = useRef<HTMLInputElement>(null);
-  const passwordEl = useRef<HTMLInputElement>(null);
   const { passwordRequired } = useJitsiPassword();
 
   const onClick = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    joinConference(
-      usernameEl.current?.value || 'NOT KNOWN',
-      passwordEl.current?.value || 'NOT KNOWN'
-    );
+
+    const usernameEl = e.currentTarget.elements.namedItem('username');
+    const passwordEl = e.currentTarget.elements.namedItem('password');
+
+    if (
+      usernameEl instanceof HTMLInputElement &&
+      passwordEl instanceof HTMLInputElement
+    ) {
+      joinConference(usernameEl.value || 'NOT KNOWN', passwordEl.value);
+    } else if (usernameEl instanceof HTMLInputElement) {
+      joinConference(usernameEl.value || 'NOT KNOWN');
+    }
   };
 
   return (
     <form autoComplete="off" noValidate onSubmit={onClick}>
       <div className="form-field">
         <label htmlFor="username">Username:</label>
-        <input type="text" id="username" ref={usernameEl} />
+        <input type="text" id="username" name="username" />
       </div>
       {passwordRequired && (
         <div className="form-field">
-          <label htmlFor="username">Enter Password:</label>
-          <input type="password" id="password" ref={passwordEl} />
+          <label htmlFor="password">Enter Password:</label>
+          <input type="password" id="password" name="password" />
         </div>
       )}
       <div className="form-field">
