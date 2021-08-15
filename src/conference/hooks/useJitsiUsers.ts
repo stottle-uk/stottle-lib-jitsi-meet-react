@@ -1,21 +1,10 @@
-import { useEffect, useState } from 'react';
-import {
-  usersInitialState,
-  UsersState
-} from '../services/reducers/usersReducer';
+import { useObservableState } from 'observable-hooks';
+import { usersInitialState } from '../services/reducers/usersReducer';
 import { useJitsiUsersState } from './useJitsiMeet';
 
 export const useJitsiUsers = () => {
   const users = useJitsiUsersState();
-  const [usersState, setUsersState] = useState<UsersState>(usersInitialState);
-
-  useEffect(() => {
-    const sub = users.state$.subscribe(state => setUsersState(state));
-
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [users]);
+  const usersState = useObservableState(users.state$, usersInitialState);
 
   return {
     userIds: usersState.userIds,

@@ -1,23 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useObservableState } from 'observable-hooks';
 import { CreateTracksOptions, JitsiTrack } from '../models/JitsiTrack';
-import {
-  devicesInitialState,
-  DevicesState
-} from '../services/reducers/devicesReducer';
+import { devicesInitialState } from '../services/reducers/devicesReducer';
 import { useJitsiDevicesState } from './useJitsiMeet';
 
 export const useJitsiDevices = () => {
   const jitsiDevices = useJitsiDevicesState();
-  const [devicesState, setDevicesState] =
-    useState<DevicesState>(devicesInitialState);
-
-  useEffect(() => {
-    const sub = jitsiDevices.state$.subscribe(state => setDevicesState(state));
-
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [jitsiDevices]);
+  const devicesState = useObservableState(
+    jitsiDevices.state$,
+    devicesInitialState
+  );
 
   const setAudioOutDevice = (deviceId: string) =>
     jitsiDevices.setAudioOutDevice(deviceId);

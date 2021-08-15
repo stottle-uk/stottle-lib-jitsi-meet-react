@@ -1,23 +1,13 @@
-import { useEffect, useState } from 'react';
-import {
-  conferenceInitialState,
-  ConferenceState
-} from '../services/reducers/conferenceReducer';
+import { useObservableState } from 'observable-hooks';
+import { conferenceInitialState } from '../services/reducers/conferenceReducer';
 import { useJitsiConferenceState } from './useJitsiMeet';
 
 export const useJitsiConference = () => {
   const conference = useJitsiConferenceState();
-  const [conferenceState, setConferenceState] = useState<ConferenceState>(
+  const conferenceState = useObservableState(
+    conference.state$,
     conferenceInitialState
   );
-
-  useEffect(() => {
-    const sub = conference.state$.subscribe(state => setConferenceState(state));
-
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [conference]);
 
   const joinConference = (username: string, password?: string) =>
     conference.joinConference(username, password);

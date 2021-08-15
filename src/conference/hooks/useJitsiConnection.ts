@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useObservableState } from 'observable-hooks';
 import { JitsiConferenceOptions } from '../models/JitsiConference';
 import { JitsiConnectionOptions } from '../models/JitsiConnection';
-import {
-  connectionInitialState,
-  ConnectionState
-} from '../services/reducers/connectionReducer';
+import { connectionInitialState } from '../services/reducers/connectionReducer';
 import { useJitsiConnectionState } from './useJitsiMeet';
 
 export interface JitsiProps {
@@ -21,17 +18,10 @@ export const useJitsiConnection = ({
   jwtToken = null
 }: JitsiProps) => {
   const connection = useJitsiConnectionState();
-  const [connectionState, setConnectionState] = useState<ConnectionState>(
+  const connectionState = useObservableState(
+    connection.state$,
     connectionInitialState
   );
-
-  useEffect(() => {
-    const sub = connection.state$.subscribe(state => setConnectionState(state));
-
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [connection]);
 
   const connect = () =>
     connection.connect(

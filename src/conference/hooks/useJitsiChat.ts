@@ -1,22 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useObservableState } from 'observable-hooks';
 import {
   chatInitialState,
-  ChatState,
   JitsiChatMessage
 } from '../services/reducers/chatReducer';
 import { useJitsiChatState } from './useJitsiMeet';
 
 export const useJitsiChat = () => {
   const chat = useJitsiChatState();
-  const [chatState, setChatState] = useState<ChatState>(chatInitialState);
-
-  useEffect(() => {
-    const sub = chat.listen().subscribe(state => setChatState(state));
-
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [chat]);
+  const chatState = useObservableState(chat.listen(), chatInitialState);
 
   const sendChatMessage = (message: JitsiChatMessage) => chat.send(message);
 

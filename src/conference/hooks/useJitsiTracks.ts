@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react';
-import { tap } from 'rxjs';
+import { useObservableState } from 'observable-hooks';
 import { JitsiTrack } from '../models/JitsiTrack';
-import {
-  tracksInitialState,
-  TracksState
-} from '../services/reducers/tracksReducer';
+import { tracksInitialState } from '../services/reducers/tracksReducer';
 import { useJitsiConference } from './useJitsiConference';
 import { useJitsiTracksState } from './useJitsiMeet';
 import { useJitsiUsers } from './useJitsiUsers';
@@ -22,21 +18,9 @@ export interface UserTrack {
 
 export const useJitsiTracks = (username: string) => {
   const tracks = useJitsiTracksState();
+  const tracksState = useObservableState(tracks.state$, tracksInitialState);
   const { myUserId, role } = useJitsiConference();
   const { userIds, users } = useJitsiUsers();
-
-  const [tracksState, setTracksState] =
-    useState<TracksState>(tracksInitialState);
-
-  useEffect(() => {
-    const sub = tracks.state$
-      .pipe(tap(state => setTracksState(state)))
-      .subscribe();
-
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [tracks]);
 
   const reduceTracks = (tracks: JitsiTrack[]) =>
     tracks.reduce<UserTrack['tracks']>(
