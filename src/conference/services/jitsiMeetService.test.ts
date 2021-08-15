@@ -32,6 +32,11 @@ const userMock = {
   roomname: 'roomNameTest'
 };
 
+const participantMock = {
+  userId: 'partId1',
+  getTracks: () => [trackMock, trackMock]
+};
+
 const ConferenceMock = {
   setDisplayName: (username: string) => void 0,
   join: (password: string) => void 0,
@@ -42,6 +47,7 @@ const ConferenceMock = {
   kickParticipant: (userId: string, reason: string) => void 0,
   muteParticipant: (userId: string, mediaType: TrackType) => void 0,
   sendCommandOnce: (name: string, values: TrackType) => void 0,
+  getParticipants: () => [participantMock, participantMock],
   addCommandListener(commandType: string, fn: Function) {},
   addEventListener(type: string, listener: Function) {},
   removeEventListener: () => void 0,
@@ -63,6 +69,8 @@ class ConnectionMock {
 
 const mediaDevicesMock = {
   enumerateDevices: (fn: Function) => fn([deviceMock, deviceMock]),
+  getAudioOutputDevice: () => deviceMock.deviceId,
+  setAudioOutputDevice: () => void 0,
   addEventListener(type: string, listener: Function) {},
   removeEventListener: () => void 0
 };
@@ -78,7 +86,7 @@ const JitsiMeetJSMock = {
       LEFT: JitsiConferenceEventTypes.Left
     },
     mediaDevices: {
-      DEVICE_CHANGE: 'mediaDevices.devicechange'
+      DEVICE_CHANGE: JitsiDevicesEventTypes.deviceListChanged
     }
   },
   errors: {},
@@ -105,6 +113,7 @@ describe('JitsiMeetService', () => {
     jest.spyOn(ConferenceMock, 'muteParticipant');
     jest.spyOn(ConferenceMock, 'sendCommandOnce');
     jest.spyOn(ConferenceMock, 'addCommandListener');
+    jest.spyOn(mediaDevicesMock, 'setAudioOutputDevice');
     jest.spyOn(JitsiMeetJSMock, 'createLocalTracks');
 
     service = new JitsiMeetService(JitsiMeetJSMock);
@@ -228,6 +237,38 @@ describe('JitsiMeetService', () => {
     });
   });
 
+  test('getAudioOutputDevice()', () => {
+    expect(service.getAudioOutputDevice()).toBe(deviceMock.deviceId);
+  });
+
+  test('setAudioOutputDevice()', () => {
+    service.setAudioOutputDevice(deviceMock.deviceId);
+
+    expect(mediaDevicesMock.setAudioOutputDevice).toHaveBeenCalledWith(
+      deviceMock.deviceId
+    );
+  });
+
+  test('getParticipants()', done => {
+    service
+      .getParticipants()
+      .pipe(toArray())
+      .subscribe(res => {
+        expect(res).toEqual([participantMock, participantMock]);
+        done();
+      });
+  });
+
+  test('getRemoteTracks()', done => {
+    service
+      .getRemoteTracks()
+      .pipe(toArray())
+      .subscribe(res => {
+        expect(res).toEqual([trackMock, trackMock, trackMock, trackMock]);
+        done();
+      });
+  });
+
   test('lockRoom()', done => {
     service.lockRoom('password').subscribe(() => {
       expect(ConferenceMock.lock).toHaveBeenCalledWith('password');
@@ -285,7 +326,7 @@ describe('JitsiMeetService', () => {
     commandHandlers[commandType]('commandValue2');
   });
 
-  test('events()', done => {
+  test('events$', done => {
     const eventHandlers: Record<string, Function> = {};
     const handler = jest.fn(
       (event, callback) => (eventHandlers[event] = callback)
@@ -294,13 +335,13 @@ describe('JitsiMeetService', () => {
     ConferenceMock.addEventListener = handler;
     mediaDevicesMock.addEventListener = handler;
 
-    const conJoinedEvt = new ConferenceJoined(userMock);
     const deviceListChangedEvt = {
-      type: 'mediaDevices.devicechange',
+      type: JitsiDevicesEventTypes.deviceListChanged,
       payload: deviceMock
     };
-    const conferenceLeftEvt = new ConferenceLeft();
     const connectionEstablishedEvt = new ConnectionEstablished();
+    const conferenceJoinedEvt = new ConferenceJoined(userMock);
+    const conferenceLeftEvt = new ConferenceLeft();
 
     merge(
       service.connectionEvents$,
@@ -312,10 +353,9 @@ describe('JitsiMeetService', () => {
         expect(events).toEqual([
           deviceListChangedEvt,
           connectionEstablishedEvt,
-          conJoinedEvt,
+          conferenceJoinedEvt,
           conferenceLeftEvt
         ]);
-
         done();
       });
 
@@ -331,7 +371,7 @@ describe('JitsiMeetService', () => {
     service.dispose();
   });
 
-  test('devices()', done => {
+  test('devices$', done => {
     service.devices$.subscribe(events => {
       expect(events).toEqual([deviceMock, deviceMock]);
       done();
