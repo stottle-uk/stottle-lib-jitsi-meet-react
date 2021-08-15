@@ -96,6 +96,7 @@ export class ConferenceFailed implements Action {
 }
 
 export type JitsiConferenceEvents =
+  | AuthStatusChanged
   | ConferenceJoined
   | ConferenceLeft
   | TrackAdded

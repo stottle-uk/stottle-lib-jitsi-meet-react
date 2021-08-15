@@ -12,6 +12,8 @@ export interface ConferenceState {
   myUserId: string;
   roomname: string;
   isHidden: boolean;
+  authEnabled: boolean;
+  authIdentity: string;
 }
 
 export const conferenceInitialState: ConferenceState = {
@@ -21,8 +23,10 @@ export const conferenceInitialState: ConferenceState = {
   wasKicked: false,
   role: 'unknown',
   myUserId: 'unknown',
-  roomname: '',
-  isHidden: false
+  roomname: 'unknown',
+  isHidden: false,
+  authEnabled: false,
+  authIdentity: 'unknown'
 };
 
 export const conferenceReducer = (
@@ -41,6 +45,9 @@ export const conferenceReducer = (
 
     case ConferenceStateActionTypes.SetKicked:
       return { ...conferenceInitialState, hasLeftRoom: true, wasKicked: true };
+
+    case ConferenceStateActionTypes.AuthStatusChanged:
+      return { ...conferenceInitialState, ...action.payload };
 
     default:
       return state;

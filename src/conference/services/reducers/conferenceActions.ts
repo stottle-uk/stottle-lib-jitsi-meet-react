@@ -4,7 +4,8 @@ export enum ConferenceStateActionTypes {
   SetCreatedTimestamp = 'setCreatedTimestamp',
   SetJoined = 'SetJoined',
   SetLeft = 'SetLeft',
-  SetKicked = 'SetKicked'
+  SetKicked = 'SetKicked',
+  AuthStatusChanged = 'AuthStatusChanged'
 }
 
 export class SetCreatedTimestamp implements Action {
@@ -34,8 +35,19 @@ export class SetKicked implements Action {
   constructor(public payload = null) {}
 }
 
+export class AuthStatusChanged implements Action {
+  readonly type = ConferenceStateActionTypes.AuthStatusChanged;
+  constructor(
+    public payload: {
+      authEnabled: boolean;
+      authIdentity: string;
+    }
+  ) {}
+}
+
 export type ConferenceStateActions =
   | SetCreatedTimestamp
   | SetJoined
   | SetLeft
-  | SetKicked;
+  | SetKicked
+  | AuthStatusChanged;
