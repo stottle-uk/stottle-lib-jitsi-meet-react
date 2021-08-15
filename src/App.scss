@@ -40,7 +40,7 @@ video {
   display: block;
   object-fit: cover;
 
-  &.local {
+  &.flip {
     transform: rotateY(180deg);
   }
 }

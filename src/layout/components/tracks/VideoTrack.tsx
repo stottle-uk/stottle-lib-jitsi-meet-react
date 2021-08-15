@@ -34,7 +34,7 @@ const VideoTrack: React.FC<OwnProps> = ({ track, dispose, onMuteChange }) => {
     <video
       autoPlay={true}
       ref={videoEl}
-      className={track.isLocal() ? 'local' : 'remote'}
+      className={track.isLocal() ? 'flip' : 'normal'}
     />
   );
 };
