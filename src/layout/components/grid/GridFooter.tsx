@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
-import { fromEvent, merge } from 'rxjs';
-import { TRACK_MUTE_CHANGED } from '../../../conference/models/events/track';
+import React from 'react';
+import { useMutedSate } from '../../../conference/hooks/useMutedState';
 import { JitsiTrack } from '../../../conference/models/JitsiTrack';
 import Speaking from './Speaking';
 
@@ -19,21 +18,7 @@ const GridFooter: React.FC<OwnProps> = ({
   audio,
   ...props
 }) => {
-  const [isMuted, setMuted] = useState({
-    audio: audio.isMuted(),
-    video: video.isMuted()
-  });
-
-  useEffect(() => {
-    const sub = merge(
-      fromEvent<JitsiTrack>(audio, TRACK_MUTE_CHANGED),
-      fromEvent<JitsiTrack>(video, TRACK_MUTE_CHANGED)
-    ).subscribe(track => {
-      setMuted(state => ({ ...state, [track.getType()]: track.isMuted() }));
-    });
-
-    return () => sub.unsubscribe();
-  }, [audio, video]);
+  const isMuted = useMutedSate(audio, video);
 
   return (
     <div {...props}>
