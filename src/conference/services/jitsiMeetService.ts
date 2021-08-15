@@ -19,6 +19,7 @@ import {
   tap
 } from 'rxjs/operators';
 import { Action } from '../models/events/action';
+import { JitsiCallQualityEvents } from '../models/events/callQuality';
 import {
   ConferenceJoined,
   JitsiConferenceEvents,
@@ -69,6 +70,7 @@ export class JitsiMeetService {
         }).map(e => this.createListener(conn, e))
       )
     ),
+    tap(d => console.log('connectionEvents', d)),
     shareReplay(1),
     takeUntil(this.destroy$)
   );
@@ -78,11 +80,26 @@ export class JitsiMeetService {
       merge(
         ...Object.values({
           ...this.jitsiMeet.events.conference,
-          ...this.jitsiMeet.events.connectionQuality,
           ...this.jitsiMeet.errors.conference
-        }).map(e => this.createListener(conf, e))
+        })
+          .filter(e => e !== 'conference.endpoint_message_received')
+          .map(e => this.createListener(conf, e))
       ).pipe(map(e => this.mapJoinedEvent(conf, e)))
     ),
+    tap(d => console.log('conferenceEvents', d)),
+    shareReplay(1),
+    takeUntil(this.destroy$)
+  );
+
+  connectionQualityEvents$ = this.confInner$.pipe(
+    mergeMap(conf =>
+      merge<JitsiCallQualityEvents[]>(
+        ...Object.values({
+          ...this.jitsiMeet.events.connectionQuality
+        }).map(e => this.createListener(conf, e))
+      )
+    ),
+    tap(d => console.log('connectionQualityEvents', d)),
     shareReplay(1),
     takeUntil(this.destroy$)
   );

@@ -1,3 +1,4 @@
+import { JitsiCallQualityEvents } from './events/callQuality';
 import { JitsiConferenceEvents } from './events/conference';
 import { JitsiParticipant } from './JitsiParticipant';
 import { JitsiTrack } from './JitsiTrack';
@@ -20,7 +21,7 @@ export interface JitsiConferenceOptions {
 }
 
 export interface JitsiConference
-  extends JitsiEventEmitter<JitsiConferenceEvents> {
+  extends JitsiEventEmitter<JitsiConferenceEvents & JitsiCallQualityEvents> {
   join(password?: string, replaceParticipant?: boolean): void;
   leave(): Promise<void>;
   myUserId(): string;
