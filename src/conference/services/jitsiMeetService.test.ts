@@ -16,10 +16,9 @@ import {
   connectOptions,
   deviceMock,
   JitsiMeetJSMock,
-  mediaDevicesMock,
+  localUserMock,
   participantMock,
-  trackMock,
-  userMock
+  trackMock
 } from '../testing/jitsiMocks';
 import { JitsiMeetService } from './jitsiMeetService';
 
@@ -42,7 +41,7 @@ describe('JitsiMeetService', () => {
     jest.spyOn(ConferenceMock.prototype, 'muteParticipant');
     jest.spyOn(ConferenceMock.prototype, 'sendCommandOnce');
     jest.spyOn(ConferenceMock.prototype, 'addCommandListener');
-    jest.spyOn(mediaDevicesMock, 'setAudioOutputDevice');
+    jest.spyOn(JitsiMeetJSMock.mediaDevices, 'setAudioOutputDevice');
     jest.spyOn(JitsiMeetJSMock, 'createLocalTracks');
 
     service = new JitsiMeetService(JitsiMeetJSMock);
@@ -174,9 +173,9 @@ describe('JitsiMeetService', () => {
   test('setAudioOutputDevice()', () => {
     service.setAudioOutputDevice(deviceMock.deviceId);
 
-    expect(mediaDevicesMock.setAudioOutputDevice).toHaveBeenCalledWith(
-      deviceMock.deviceId
-    );
+    expect(
+      JitsiMeetJSMock.mediaDevices.setAudioOutputDevice
+    ).toHaveBeenCalledWith(deviceMock.deviceId);
   });
 
   test('getParticipants()', done => {
@@ -264,14 +263,14 @@ describe('JitsiMeetService', () => {
     );
     ConnectionMock.prototype.addEventListener = handler;
     ConferenceMock.prototype.addEventListener = handler;
-    mediaDevicesMock.addEventListener = handler;
+    JitsiMeetJSMock.mediaDevices.addEventListener = handler;
 
     const deviceListChangedEvt = {
       type: JitsiDevicesEventTypes.deviceListChanged,
       payload: deviceMock
     };
     const connectionEstablishedEvt = new ConnectionEstablished();
-    const conferenceJoinedEvt = new ConferenceJoined(userMock);
+    const conferenceJoinedEvt = new ConferenceJoined(localUserMock);
     const conferenceLeftEvt = new ConferenceLeft();
 
     merge(

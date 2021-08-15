@@ -11,8 +11,8 @@ export type TrackType = 'audio' | 'video' | 'desktop';
 
 export interface JitsiCommandValues {
   value: string;
-  attributes: Record<string, string | number | boolean>; // map with keys the name of the attribute and values - the values of the attributes.
-  children: []; // array with JS object with the same structure.
+  attributes: Record<string, string | number | boolean>;
+  children: [];
 }
 
 export interface JitsiEventEmitter<E> {

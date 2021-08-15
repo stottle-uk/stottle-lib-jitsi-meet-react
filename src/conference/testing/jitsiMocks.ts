@@ -1,6 +1,9 @@
 import { JitsiConferenceEventTypes } from '../models/events/conference';
 import { JitsiConnectionEventTypes } from '../models/events/connection';
-import { JitsiDevicesEventTypes } from '../models/events/mediaDevices';
+import {
+  JitsiDevicesEvents,
+  JitsiDevicesEventTypes
+} from '../models/events/mediaDevices';
 import {
   JitsiConference,
   JitsiConferenceOptions
@@ -9,6 +12,7 @@ import {
   JitsiConnection,
   JitsiConnectionOptions
 } from '../models/JitsiConnection';
+import { JitsiMediaDevices } from '../models/JitsiMediaDevices';
 import { JitsiMeetJS } from '../models/JitsiMeetJS';
 import { JitsiParticipant } from '../models/JitsiParticipant';
 import { JitsiTrack } from '../models/JitsiTrack';
@@ -33,7 +37,7 @@ export const deviceMock = {
   label: 'deviceLabel'
 } as MediaDeviceInfo;
 
-export const userMock = {
+export const localUserMock = {
   isHidden: false,
   myUserId: 'myUserId1',
   role: 'moderator',
@@ -105,16 +109,16 @@ export class ConferenceMock implements JitsiConference {
   addEventListener(type: string, listener: Function) {}
   removeEventListener() {}
   getRole() {
-    return userMock.role;
+    return localUserMock.role;
   }
   myUserId() {
-    return userMock.myUserId;
+    return localUserMock.myUserId;
   }
   isHidden() {
-    return userMock.isHidden;
+    return localUserMock.isHidden;
   }
   getName() {
-    return userMock.roomname;
+    return localUserMock.roomname;
   }
 }
 
@@ -130,13 +134,32 @@ export class ConnectionMock implements JitsiConnection {
   removeEventListener(): void {}
 }
 
-export const mediaDevicesMock = {
-  enumerateDevices: (fn: Function) => fn([deviceMock, deviceMock]),
-  getAudioOutputDevice: () => deviceMock.deviceId,
-  setAudioOutputDevice: () => void 0,
-  addEventListener(type: string, listener: Function) {},
-  removeEventListener: () => void 0
-};
+export class MediaDevicesMock implements JitsiMediaDevices {
+  isDeviceListAvailable(): void {}
+  isDeviceChangeAvailable(deviceType: 'input' | 'output' | undefined): boolean {
+    return true;
+  }
+  enumerateDevices(callback: (devices: MediaDeviceInfo[]) => void): void {
+    callback([deviceMock, deviceMock]);
+  }
+  setAudioOutputDevice(deviceId: string): void {}
+  getAudioOutputDevice(): string {
+    return deviceMock.deviceId;
+  }
+  isDevicePermissionGranted(
+    type: 'audio' | 'video' | undefined
+  ): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+  addEventListener(
+    type: string,
+    listener: (evt: JitsiDevicesEvents) => void
+  ): void {}
+  removeEventListener(
+    type: string,
+    listener: (evt: JitsiDevicesEvents) => void
+  ): void {}
+}
 
 export const JitsiMeetJSMock = {
   JitsiConnection: ConnectionMock,
@@ -154,5 +177,5 @@ export const JitsiMeetJSMock = {
   },
   errors: {},
   createLocalTracks: () => Promise.resolve([trackMock, trackMock]),
-  mediaDevices: mediaDevicesMock
+  mediaDevices: new MediaDevicesMock()
 } as unknown as JitsiMeetJS;
