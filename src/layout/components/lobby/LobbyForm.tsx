@@ -6,22 +6,16 @@ interface OwnProps {
 }
 
 const LobbyForm: React.FC<OwnProps> = ({ joinConference }) => {
-  const { passwordRequired } = useJitsiPassword();
+  const { passwordRequired, attempts } = useJitsiPassword();
 
   const onClick = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const usernameEl = e.currentTarget.elements.namedItem('username');
-    const passwordEl = e.currentTarget.elements.namedItem('password');
+    const [usernameEl, passwordEl] = ['username', 'password'].map(
+      c => e.currentTarget.elements.namedItem(c) as HTMLInputElement
+    );
 
-    if (
-      usernameEl instanceof HTMLInputElement &&
-      passwordEl instanceof HTMLInputElement
-    ) {
-      joinConference(usernameEl.value || 'NOT KNOWN', passwordEl.value);
-    } else if (usernameEl instanceof HTMLInputElement) {
-      joinConference(usernameEl.value || 'NOT KNOWN');
-    }
+    joinConference(usernameEl.value || 'NOT KNOWN', passwordEl?.value);
   };
 
   return (
@@ -34,6 +28,11 @@ const LobbyForm: React.FC<OwnProps> = ({ joinConference }) => {
         <div className="form-field">
           <label htmlFor="password">Enter Password:</label>
           <input type="password" id="password" name="password" />
+          {attempts > 1 && (
+            <div className="form-error">
+              Password Incorrect, please try again
+            </div>
+          )}
         </div>
       )}
       <div className="form-field">

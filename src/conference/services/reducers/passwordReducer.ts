@@ -2,10 +2,12 @@ import { PasswordActionTypes, PasswordStateActions } from './passwordActions';
 
 export interface PasswordState {
   passwordRequired: boolean;
+  attempts: number;
 }
 
 export const passwordInitialState: PasswordState = {
-  passwordRequired: false
+  passwordRequired: false,
+  attempts: 0
 };
 
 export const passwordReducer = (
@@ -16,7 +18,8 @@ export const passwordReducer = (
     case PasswordActionTypes.SetPasswordRequired:
       return {
         ...state,
-        passwordRequired: action.payload
+        passwordRequired: action.payload,
+        attempts: state.attempts + 1
       };
 
     default:
