@@ -14,12 +14,22 @@ const LobbyForm: React.FC<OwnProps> = ({ joinConference }) => {
     <div>
       <div className="form-field">
         <label htmlFor="username">Username:</label>
-        <input type="text" id="username" ref={usernameEl} />
+        <input
+          type="text"
+          id="username"
+          ref={usernameEl}
+          autoComplete="false"
+        />
       </div>
       {passwordRequired && (
         <div className="form-field">
           <label htmlFor="username">Enter Password:</label>
-          <input type="password" id="password" ref={passwordEl} />
+          <input
+            type="password"
+            id="password"
+            ref={passwordEl}
+            autoComplete="false"
+          />
         </div>
       )}
       <div className="form-field">
