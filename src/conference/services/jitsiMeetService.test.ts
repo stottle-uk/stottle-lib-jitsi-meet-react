@@ -81,14 +81,18 @@ describe('JitsiMeetService', () => {
     });
   });
 
-  test('leaveConference()', () => {
-    service.leaveConference().subscribe();
-    expect(ConferenceMock.prototype.leave).toHaveBeenCalled();
+  test('leaveConference()', done => {
+    service.leaveConference().subscribe(() => {
+      expect(ConferenceMock.prototype.leave).toHaveBeenCalled();
+      done();
+    });
   });
 
-  test('addTrack()', () => {
-    service.addTrack(trackMock).subscribe();
-    expect(ConferenceMock.prototype.addTrack).toHaveBeenCalledWith(trackMock);
+  test('addTrack()', done => {
+    service.addTrack(trackMock).subscribe(() => {
+      expect(ConferenceMock.prototype.addTrack).toHaveBeenCalledWith(trackMock);
+      done();
+    });
   });
 
   test('createLocalTracks()', done => {
@@ -250,7 +254,7 @@ describe('JitsiMeetService', () => {
         done();
       });
 
-    commands.forEach(c => commandHandlers[commandType](c));
+    commands.forEach(cmd => commandHandlers[commandType](cmd));
   });
 
   test('events$', done => {
