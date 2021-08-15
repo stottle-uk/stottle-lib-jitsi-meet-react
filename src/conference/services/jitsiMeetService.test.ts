@@ -9,90 +9,19 @@ import {
   JitsiConnectionEventTypes
 } from '../models/events/connection';
 import { JitsiDevicesEventTypes } from '../models/events/mediaDevices';
-import { JitsiMeetJS } from '../models/JitsiMeetJS';
-import { JitsiTrack } from '../models/JitsiTrack';
-import { TrackType } from '../models/utils';
+import {
+  ConferenceMock,
+  conferenceOptions,
+  ConnectionMock,
+  connectOptions,
+  deviceMock,
+  JitsiMeetJSMock,
+  mediaDevicesMock,
+  participantMock,
+  trackMock,
+  userMock
+} from '../testing/jitsiMocks';
 import { JitsiMeetService } from './jitsiMeetService';
-
-const trackMock = {
-  type: 'audio'
-} as JitsiTrack;
-
-const deviceMock = {
-  deviceId: 'd123',
-  groupId: 'g123',
-  kind: 'audioinput',
-  label: 'deviceLabel'
-} as MediaDeviceInfo;
-
-const userMock = {
-  isHidden: false,
-  myUserId: 'myUserId1',
-  role: 'userRole',
-  roomname: 'roomNameTest'
-};
-
-const participantMock = {
-  userId: 'partId1',
-  getTracks: () => [trackMock, trackMock]
-};
-
-const ConferenceMock = {
-  setDisplayName: (username: string) => void 0,
-  join: (password: string) => void 0,
-  leave: () => void 0,
-  addTrack: (track: JitsiTrack) => void 0,
-  replaceTrack: (oldT: JitsiTrack, newT: JitsiTrack) => void 0,
-  lock: (password: string) => Promise.resolve(void 0),
-  kickParticipant: (userId: string, reason: string) => void 0,
-  muteParticipant: (userId: string, mediaType: TrackType) => void 0,
-  sendCommandOnce: (name: string, values: TrackType) => void 0,
-  getParticipants: () => [participantMock, participantMock],
-  addCommandListener(commandType: string, fn: Function) {},
-  addEventListener(type: string, listener: Function) {},
-  removeEventListener: () => void 0,
-  getRole: () => userMock.role,
-  myUserId: () => userMock.myUserId,
-  isHidden: () => userMock.isHidden,
-  getName: () => userMock.roomname
-};
-
-class ConnectionMock {
-  connect() {}
-  disconnect() {}
-  initJitsiConference(r: string, o: any) {
-    return ConferenceMock;
-  }
-  addEventListener(type: string, listener: Function): void {}
-  removeEventListener(): void {}
-}
-
-const mediaDevicesMock = {
-  enumerateDevices: (fn: Function) => fn([deviceMock, deviceMock]),
-  getAudioOutputDevice: () => deviceMock.deviceId,
-  setAudioOutputDevice: () => void 0,
-  addEventListener(type: string, listener: Function) {},
-  removeEventListener: () => void 0
-};
-
-const JitsiMeetJSMock = {
-  JitsiConnection: ConnectionMock,
-  events: {
-    connection: {
-      CONNECTION_ESTABLISHED: JitsiConnectionEventTypes.ConnectionEstablished
-    },
-    conference: {
-      JOINED: JitsiConferenceEventTypes.Joined,
-      LEFT: JitsiConferenceEventTypes.Left
-    },
-    mediaDevices: {
-      DEVICE_CHANGE: JitsiDevicesEventTypes.deviceListChanged
-    }
-  },
-  errors: {},
-  createLocalTracks: () => Promise.resolve([trackMock, trackMock]),
-  mediaDevices: mediaDevicesMock
-} as unknown as JitsiMeetJS;
 
 describe('JitsiMeetService', () => {
   let service: JitsiMeetService;
@@ -103,16 +32,16 @@ describe('JitsiMeetService', () => {
     jest.spyOn(ConnectionMock.prototype, 'connect');
     jest.spyOn(ConnectionMock.prototype, 'disconnect');
     jest.spyOn(ConnectionMock.prototype, 'initJitsiConference');
-    jest.spyOn(ConferenceMock, 'setDisplayName');
-    jest.spyOn(ConferenceMock, 'join');
-    jest.spyOn(ConferenceMock, 'leave');
-    jest.spyOn(ConferenceMock, 'addTrack');
-    jest.spyOn(ConferenceMock, 'replaceTrack');
-    jest.spyOn(ConferenceMock, 'lock');
-    jest.spyOn(ConferenceMock, 'kickParticipant');
-    jest.spyOn(ConferenceMock, 'muteParticipant');
-    jest.spyOn(ConferenceMock, 'sendCommandOnce');
-    jest.spyOn(ConferenceMock, 'addCommandListener');
+    jest.spyOn(ConferenceMock.prototype, 'setDisplayName');
+    jest.spyOn(ConferenceMock.prototype, 'join');
+    jest.spyOn(ConferenceMock.prototype, 'leave');
+    jest.spyOn(ConferenceMock.prototype, 'addTrack');
+    jest.spyOn(ConferenceMock.prototype, 'replaceTrack');
+    jest.spyOn(ConferenceMock.prototype, 'lock');
+    jest.spyOn(ConferenceMock.prototype, 'kickParticipant');
+    jest.spyOn(ConferenceMock.prototype, 'muteParticipant');
+    jest.spyOn(ConferenceMock.prototype, 'sendCommandOnce');
+    jest.spyOn(ConferenceMock.prototype, 'addCommandListener');
     jest.spyOn(mediaDevicesMock, 'setAudioOutputDevice');
     jest.spyOn(JitsiMeetJSMock, 'createLocalTracks');
 
@@ -120,16 +49,8 @@ describe('JitsiMeetService', () => {
   });
 
   beforeEach(() => {
-    service.connect('appId', 'token', {
-      clientNode: '',
-      hosts: { domain: '', muc: '' }
-    });
-
-    service
-      .initConference('roomname', {
-        enableLayerSuspension: true
-      })
-      .subscribe();
+    service.connect('appId', 'token', connectOptions);
+    service.initConference('roomname', conferenceOptions).subscribe();
   });
 
   test('connect()', () => {
@@ -139,7 +60,7 @@ describe('JitsiMeetService', () => {
   test('initJitsiConference()', () => {
     expect(ConnectionMock.prototype.initJitsiConference).toHaveBeenCalledWith(
       'roomname',
-      { enableLayerSuspension: true }
+      conferenceOptions
     );
   });
 
@@ -152,20 +73,22 @@ describe('JitsiMeetService', () => {
 
   test('joinConference()', done => {
     service.joinConference('username', 'password').subscribe(() => {
-      expect(ConferenceMock.setDisplayName).toHaveBeenCalledWith('username');
-      expect(ConferenceMock.join).toHaveBeenCalledWith('password');
+      expect(ConferenceMock.prototype.setDisplayName).toHaveBeenCalledWith(
+        'username'
+      );
+      expect(ConferenceMock.prototype.join).toHaveBeenCalledWith('password');
       done();
     });
   });
 
   test('leaveConference()', () => {
     service.leaveConference().subscribe();
-    expect(ConferenceMock.leave).toHaveBeenCalled();
+    expect(ConferenceMock.prototype.leave).toHaveBeenCalled();
   });
 
   test('addTrack()', () => {
     service.addTrack(trackMock).subscribe();
-    expect(ConferenceMock.addTrack).toHaveBeenCalledWith(trackMock);
+    expect(ConferenceMock.prototype.addTrack).toHaveBeenCalledWith(trackMock);
   });
 
   test('createLocalTracks()', done => {
@@ -199,16 +122,19 @@ describe('JitsiMeetService', () => {
         expect(JitsiMeetJSMock.createLocalTracks).toHaveBeenCalledWith(
           trackOptions
         );
-        expect(ConferenceMock.replaceTrack).toHaveBeenCalledWith(trackMock, {
-          ...trackMock,
-          type: 'desktop'
-        });
+        expect(ConferenceMock.prototype.replaceTrack).toHaveBeenCalledWith(
+          trackMock,
+          {
+            ...trackMock,
+            type: 'desktop'
+          }
+        );
         done();
       });
   });
 
   test('replaceTrack() cancel error', done => {
-    ConferenceMock.replaceTrack = jest.fn(() => {
+    ConferenceMock.prototype.replaceTrack = jest.fn(() => {
       // eslint-disable-next-line no-throw-literal
       throw {
         name: 'gum.screensharing_user_canceled'
@@ -222,7 +148,7 @@ describe('JitsiMeetService', () => {
   });
 
   test('replaceTrack() other error', done => {
-    ConferenceMock.replaceTrack = jest.fn(() => {
+    ConferenceMock.prototype.replaceTrack = jest.fn(() => {
       // eslint-disable-next-line no-throw-literal
       throw {
         name: 'other Error'
@@ -271,14 +197,14 @@ describe('JitsiMeetService', () => {
 
   test('lockRoom()', done => {
     service.lockRoom('password').subscribe(() => {
-      expect(ConferenceMock.lock).toHaveBeenCalledWith('password');
+      expect(ConferenceMock.prototype.lock).toHaveBeenCalledWith('password');
       done();
     });
   });
 
   test('kickParticipant()', done => {
     service.kickParticipant('userId1').subscribe(() => {
-      expect(ConferenceMock.kickParticipant).toHaveBeenCalledWith(
+      expect(ConferenceMock.prototype.kickParticipant).toHaveBeenCalledWith(
         'userId1',
         'userKicked'
       );
@@ -288,7 +214,7 @@ describe('JitsiMeetService', () => {
 
   test('muteParticipant()', done => {
     service.muteParticipant('userId1', 'audio').subscribe(() => {
-      expect(ConferenceMock.muteParticipant).toHaveBeenCalledWith(
+      expect(ConferenceMock.prototype.muteParticipant).toHaveBeenCalledWith(
         'userId1',
         'audio'
       );
@@ -298,7 +224,7 @@ describe('JitsiMeetService', () => {
 
   test('sendCommandOnce()', done => {
     service.sendCommandOnce('messageType', 'messageData').subscribe(() => {
-      expect(ConferenceMock.sendCommandOnce).toHaveBeenCalledWith(
+      expect(ConferenceMock.prototype.sendCommandOnce).toHaveBeenCalledWith(
         'messageType',
         'messageData'
       );
@@ -308,22 +234,23 @@ describe('JitsiMeetService', () => {
 
   test('addCommandListener()', done => {
     const commandHandlers: Record<string, Function> = {};
-    ConferenceMock.addCommandListener = jest.fn(
+    ConferenceMock.prototype.addCommandListener = jest.fn(
       (command: string, callback: Function) =>
         (commandHandlers[command] = callback)
     );
 
     const commandType = 'commandName';
+    const commands = ['cmdVal1', 'cmdVal2', 'cmdVal3'];
+
     service
       .addCommandListener(commandType)
-      .pipe(take(2), toArray())
+      .pipe(take(commands.length), toArray())
       .subscribe(res => {
-        expect(res).toEqual(['commandValue1', 'commandValue2']);
+        expect(res).toEqual(commands);
         done();
       });
 
-    commandHandlers[commandType]('commandValue1');
-    commandHandlers[commandType]('commandValue2');
+    commands.forEach(c => commandHandlers[commandType](c));
   });
 
   test('events$', done => {
@@ -332,7 +259,7 @@ describe('JitsiMeetService', () => {
       (event, callback) => (eventHandlers[event] = callback)
     );
     ConnectionMock.prototype.addEventListener = handler;
-    ConferenceMock.addEventListener = handler;
+    ConferenceMock.prototype.addEventListener = handler;
     mediaDevicesMock.addEventListener = handler;
 
     const deviceListChangedEvt = {

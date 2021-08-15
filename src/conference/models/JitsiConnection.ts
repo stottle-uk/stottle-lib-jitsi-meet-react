@@ -33,12 +33,12 @@ export interface JitsiConnectionOptions {
 
 export interface JitsiConnection
   extends JitsiEventEmitter<JitsiConnectionEvents> {
-  connect: (options?: { id?: string; password: string }) => void;
-  disconnect: () => void;
-  initJitsiConference: (
+  connect(options?: { id?: string; password: string }): void;
+  disconnect(): void;
+  initJitsiConference(
     name: string,
     options: JitsiConferenceOptions
-  ) => JitsiConference;
-  addFeature: (...args: any[]) => void;
-  removeFeature: (...args: any[]) => void;
+  ): JitsiConference;
+  addFeature(...args: unknown[]): void;
+  removeFeature(...args: unknown[]): void;
 }
