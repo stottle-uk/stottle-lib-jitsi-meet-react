@@ -16,7 +16,7 @@ const SettingsForm: React.FC<OwnProps> = ({ subitPassword }) => {
           name="password"
           id="password"
           ref={passwordEl}
-          autoComplete="false"
+          autoComplete="off"
         />
       </div>
       <div className="form-field">
